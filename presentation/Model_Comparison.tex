@@ -1,6 +1,6 @@
 \section{Model Comparison}
 
-% 1-1
+% 6-1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame{
 \frametitle{Quantlet: Model Comparison}
@@ -10,14 +10,55 @@
 \begin{itemize}
 \item Mean Squared Error	
 \item Bias  
-\item real Vs. estimated plots 
+\item real Vs. predicted plots 
 
 \end{itemize}
 
 \end{itemize}
 }
+% 6-2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Real Vs. Predicted: Code}
 
-% 1-2
+\begin{lstlisting}[basicstyle=\tiny][language=R]
+predictions.lm = predict(lm.fit, newdata = test)
+df.lm.fit      = data.frame(cbind(test$logSalePrice, predictions.lm ))
+
+lm.plot = ggplot(df.lm.fit, aes(test$logSalePrice, predictions.lm)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + 
+    stat_smooth(method = "lm", se = FALSE) + 
+    labs(title = "Plot of real logSalePrice against predicted values", 
+    x = "logSalePrice", y = "lm.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
+    face = "bold")) + 
+    annotate("text", label = paste("MSE:", comparison.result["MSE", "lm"], sep = " "), x = -3, y = 3) + 
+    annotate("text", label = paste("MAE:", comparison.result["MAE", "lm"], sep = " "), x = -3, y = 2.5)
+
+\end{lstlisting}
+
+\end{frame}
+
+
+% 6-3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Real Vs. Predicted Plots}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=0.8\textwidth]{\string"../quantlets/Model_Comparison/Model_Comparison2\string".pdf}
+\end{figure}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item If the house prices were predicted perfectly, all points would lie on the red line
+\item The blue line comes from an OLS regression: The better the predictions, the more blue and red lines should align 
+\end{itemize}
+\end{column}
+\end{columns}
+}
+
+% 6-4
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
 \frametitle{Performance measure example: MSE Code}
@@ -37,7 +78,8 @@ model.mse = function(model, test.data = test) {
 \end{lstlisting}
 
 \end{frame}
-%1-3
+
+%6-5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \frame{
 \frametitle{Result comparing all models}
@@ -48,47 +90,7 @@ model.mse = function(model, test.data = test) {
 \item The random forest and the gradient boosting method show a far better Mean Sqared Error on the training data. This might indicate, that these models are overfitted to the data.
 \end{itemize}
 }
-% 1-4
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]
-\frametitle{Performance measure example: MSE Code}
 
-\begin{lstlisting}[basicstyle=\tiny][language=R]
-predictions.lm = predict(lm.fit, newdata = test)
-df.lm.fit      = data.frame(cbind(test$logSalePrice, predictions.lm ))
-
-lm.plot = ggplot(df.lm.fit, aes(test$logSalePrice, predictions.lm)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + 
-    stat_smooth(method = "lm", se = FALSE) + 
-    labs(title = "Plot of real logSalePrice against predicted values", 
-    x = "logSalePrice", y = "lm.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
-    face = "bold")) + 
-    annotate("text", label = paste("MSE:", comparison.result["MSE", "lm"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "lm"], sep = " "), x = -3, y = 2.5)
-
-\end{lstlisting}
-
-\end{frame}
-
-
-% 1-5
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\frame{
-\frametitle{Real Vs. Estimated Plots}
-
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\includegraphics[width=0.8\textwidth]{\string"../quantlets/Model_Comparison/Model_Comparison2\string".pdf}
-\end{figure}
-\end{column}
-\begin{column}{0.5\textwidth}
-\begin{itemize}
-\item If the house prices would be predicted perfectly, all points would lie on the red line
-\item The blue line comes from an OLS regression: The better the predictions the more blue and red line should be the same 
-\end{itemize}
-\end{column}
-\end{columns}
-}
 
 
 

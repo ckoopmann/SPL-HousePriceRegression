@@ -1,5 +1,5 @@
 
-Name of Quantlet: Exploratory_Data_Analysis_Dependence_Analysis
+Name of Quantlet: Exploratory_Data_Analysis_Dependence
 
 Published in: 'Statistical programming languages - Student Project on "House Prices: Advanced Regression Techniques" '
 
@@ -14,4 +14,4 @@ See also:
 Submitted:  10.06.2017
 
 Input: 'train.csv'
-Output: Corrplot.pdf, boxplot_1through6.pdf, boxplot_1through6.pdf, boxplot_7through12.pdf, boxplot_13through18.pdf, boxplot_19through24.pdf, boxplot_25through30.pdf, boxplot_31through36.pdf, boxplot_37through43.pdf
+Output: Corrplot.pdf, Barplot_ordered.pdf, boxplot_1through6.pdf, boxplot_7through12.pdf, boxplot_13through18.pdf, boxplot_19through24.pdf, boxplot_25through30.pdf, boxplot_31through36.pdf, boxplot_37through43.pdf

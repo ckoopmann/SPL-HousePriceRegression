@@ -62,7 +62,7 @@ lm.penal = function(type, x, y) {
     } else stop("type must be ridge or lasso")
     cvfit     = cv.glmnet(x, y, alpha = alpha, nfolds = 10)
     fit       = predict(cvfit,newx=x,s="lambda.1se")
-    rsq       = 1 - sum(y^2)/sum((fit - y)^2)
+    rsq       = 1 - sum((fit - y)^2)/sum(y^2)
     c         = coef(cvfit, s = "lambda.1se")
     inds      = which(c != 0)
     var = row.names(c)[inds]
