@@ -1,0 +1,48 @@
+\section{Random Forest}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Random Forest}
+\begin{itemize}
+\item Applied Random Forest Regression Model to the data
+\item Collection of Regression Trees, where the predicted value is the average value in the leaf node.
+\item Results are averaged across all Regression Trees in the Forest
+\item Tuning Parameter: \textit{mtry} - Number of randomly selected variables per decision tree
+\item Model is tuned using the \textit{caret} package and 5 Fold Cross Validation in a parallelized fashion using \textit{doParallel}
+\end{itemize}
+
+}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Random Forest: Code}
+
+\begin{lstlisting}[language=R]
+CrossValidation = trainControl(method = "repeatedcv", number = nfolds, p = ptrain, repeats = nrepeats)
+rfGrid 	    = expand.grid(mtry = mtry.tuning)
+cores       = max(c(detectCores() - 1, 0))
+cl          = makeCluster(cores)
+registerDoParallel(cl)
+set.seed(123)
+rftuned = train(log(SalePrice) ~ ., data = df, method = "rf", importance = TRUE, trControl = CrossValidation, verbose = TRUE, 
+    tuneGrid = rfGrid)
+stopCluster(cl)
+\end{lstlisting}
+\end{frame}
+
+\frame{
+\frametitle{Random Forest Tuning Results - RMSE}
+\includegraphics[width=\textwidth,keepaspectratio]{\string"../quantlets/Random_Forest/rf_rmse\string".pdf}
+}
+
+\frame{
+\frametitle{Random Forest Tuning Results - RMSE}
+\includegraphics[width=\textwidth,keepaspectratio]{\string"../quantlets/Random_Forest/rf_rmse\string".pdf}
+}
+
+\frame{
+\frametitle{Random Forest Tuning Results - R Squared}
+\includegraphics[width=\textwidth,keepaspectratio]{\string"../quantlets/Random_Forest/rf_rsq\string".pdf}
+}

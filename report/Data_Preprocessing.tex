@@ -1,0 +1,8 @@
+
+After reading in the preprocessed data factor variables are transformed
+into dummies. For this, a model matrix is created that contains all
+factor levels as columns. Now for each row a 1 is given, if a case
+has a certain value in a factor, 0 otherwise. Then, numeric variables
+are standardized and combined with the dummy variables. To avoid issues
+with spaces, the names of the variables are converted so they can
+be handled by R.

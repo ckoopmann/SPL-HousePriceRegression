@@ -1,0 +1,136 @@
+\section{Data Preprocessing}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Quantlet: Data Preprocessing}
+\begin{itemize}
+\item aim of this quantlet: ensure, that the data quality is sufficent for all types of models that will be used
+\item handling of missing data, including imputation
+\item reduction of dimensionality
+\begin{itemize}
+\item merging of factor levels
+\item principal component analysis
+
+\end{itemize}
+\item detetection and handling of outliers
+
+\end{itemize}
+}
+
+
+
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Missing Data}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth,keepaspectratio]{\string"../quantlets/Data_Preprocessing/missmap\string".pdf}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item based on data description, most NA's have a meaning (None/Other)
+\item imputation of remaining NA's
+\begin{itemize}
+\item numeric variables: median
+\item factor variables: mode
+\end{itemize}
+\end{itemize}
+\end{column}
+\end{columns}
+}
+
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Missing Data: Code}
+
+\begin{lstlisting}[language=R]
+Mode = function(x) {
+     ux = unique(x)
+     ux[which.max(tabulate(match(x, ux)))]
+}
+impute.mode = function(x){
+     nas      = is.na(x)
+     x[nas] = Mode(x[!nas])
+     as.factor(x)
+}
+categoric.imputed = as.data.frame(sapply(categoric.data, impute.mode))
+
+\end{lstlisting}
+
+\end{frame}
+
+
+
+
+
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Outlier Handling: Code}
+
+\begin{lstlisting}[language=R]
+outlier.count = function(x){
+     low =as.numeric(quantile(x)[2] - IQR(x)*3)
+     high=as.numeric(IQR(x)*3 + quantile(x)[4])
+     sum(x >= high | x <= low)
+}
+outlier.truncate = function(x){
+      low =as.numeric(quantile(x)[2] - IQR(x)*3)
+      high=as.numeric(IQR(x)*3 + quantile(x)[4])
+      x[x < low] = low
+      x[x > high] = high
+      return(x)
+}
+df_outlier_trunc = as.data.frame(sapply(df.temp.numeric, outlier.truncate))
+
+\end{lstlisting}
+
+\end{frame}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Outlier: Before and after truncation}
+\begin{centering}
+\includegraphics[height=0.7\textheight,keepaspectratio]{\string"../quantlets/Data_Preprocessing/boxplots\string".pdf}
+\end{centering}
+}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Dimensionality Reduction: Code}
+
+\begin{lstlisting}[language=R]
+single.factors = function(data) {
+    for(var in names(data)) {
+        if(is.factor(data[[var]])){
+            tbl = table(data[[var]])
+            ren = names(tbl)[tbl <=  20]
+            levels(data[[var]])[levels(data[[var]]) %in% ren] = "Other"
+            tbl     = table(data[[var]])
+            tbl_sum = sum(tbl < 20) 
+            if(nlevels(data[[var]]) < 3 & tbl_sum >= 1  ) data[[var]] = NA
+         }
+    }
+    return(data)
+}
+\end{lstlisting}
+
+\end{frame}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Preprocessing: Summary}
+\begin{centering}
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_Preprocessing/histograms\string".pdf}
+\end{centering}
+}

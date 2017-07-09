@@ -1,0 +1,89 @@
+
+
+
+\section{Regression Models: Implementation}
+\subsection{Backward Selection}
+The first model is a self implemented backward selection based on p-values. For this, a function is written which requires a dataframe and the dependent variable. The dependent variable y is regressed on the remaining variables 
+in a loop, in which at each iteration the insignificant variables
+are dropped until every variable is significant. 
+The first variable selection are all variables in the dataframe except the dependent variable. y is then regressed on all variables from the selection using a OLS. The p-values of all variables are stored in a matrix, and except
+for the intercept the variable names are stored, which have a p-value
+of less than 0.05. The insignificant variables are counted (z).  In the next iteration, the procedure is repeated,
+until the count z of insignificant variables is zero and the loop
+ends. Alternatively, the loop ends after 300 iterations and returns a warning. This is to ensure
+that it doenst run infinetly, for instance when there are no significant variables at all. 
+Either way, the list of variables of the last iteration is returned and using that list,  a linear model using OLS is fitted. 
+
+
+\begin{lstlisting}[language=R]
+sign.select = function(dframe, y) {
+    pvals          = 1
+    z              = 1
+    i              = 1
+    vars.selection = names(dframe)
+    vars.selection = vars.selection[!vars.selection %in% y]
+    while (z > 0) {
+        df.lm          = cbind(dframe[vars.selection], dframe[y])
+        lm1            = lm(formula(paste(y, "~ . ")), data = df.lm)
+        pvals          = summary(lm1)$coefficients[, 4]
+        pvals          = pvals[!names(pvals) %in% "(Intercept)"]
+        vars.selection = names(pvals[pvals < 0.05])
+        z              = sum(pvals > 0.05)
+        print(vars.selection)
+        i = i + 1
+        if (i == 300) {
+             warning("Did not finish in 300 iterations. No significant variables in data set?")
+             break
+        }
+     }
+     return(vars.selection)
+}
+
+vars   = sign.select(df, "logSalePrice")
+lm.fit = lm(logSalePrice ~ ., data = df[, c(vars, "logSalePrice")])
+summary(lm.fit)
+\end{lstlisting}
+\subsection{Forward selection}
+The forward selection is based on the package step. Firstly a minimal (none.fit) and a maximal model (all.fit) are defined. Starting from the minimal model, the step-algorithm selects the variable which inclusion would lead to the smallest AIC. Those steps are repeated, until no additional variable leads to a sufficently large increase in the AIC, as explained in section XX. 
+For visualization, the AIC reduction is plotted against the number of variables. For this, a dataframe with the respective number of variables and corresponding AICs is created and then passed to the function ggplot.
+
+\subsubsection{Ridge and Lasso}
+\subsection{Ridge and Lasso}
+The function lm.penal Based on the package glmnet, a function is implemented  that performs either lasso or ridge regression, where the optimal penalizing term lambda is selected based on a 10 fold cross validation. lm.penal requires an input of x variablexs, the dependent variable y and the choice "lasso" or "ridge". Firstly it is determined, if the input for type was correct and which alpha results from it. If the input is incorrent, the functions stops with an error message.
+Then the glmnet function cv.glmnet is used to select the optimal paramter lambda. To obtain fitted values for y,  the predict function is used  to predict the outcome based on the x variables. The corresponding $R^{2}$ is calculated.
+To make a nicely looking comparision table in later steps, a table of coefficients and variable names is created. The function returns different objects for plotting and the later created comparision table.
+\begin{lstlisting}[language=R]
+lm.penal = function(type, x, y) {
+    if (type == "lasso") {
+        alpha = 1
+    } else if ( type == "ridge") {
+        alpha = 0
+    } else
+        stop("type must be either ridge or lasso")
+    cvfit          = cv.glmnet(x, y, alpha = alpha, nfolds = 10)
+    fit            =  predict(cvfit,newx=x, s="lambda.1se")
+    sst            = sum(y^2)
+    sse            = sum((fit - y)^2)
+    # R squared
+    rsq            = 1 - sse / sst
+    c              = coef(cvfit, s = "lambda.1se")
+    inds           = which(c != 0)
+    variables      = row.names(c)[inds]
+    vars.selection = variables[!variables %in% "(Intercept)"]
+    coeftable      = data.frame(var = variables,
+        coeff            = c[inds],
+        stringsAsFactors = FALSE)
+    c              = round(c, digits = 3)
+    rsq            = round(rsq, digits = 2)
+    output         = list(vars.selection, coeftable, c, cvfit, fit, rsq)
+}
+#perform regressions
+lasso = lm.penal(type = "lasso", x = x, y = y)
+ridge = lm.penal(type = "ridge", x = x, y = y)
+\end{lstlisting}[language=R]
+
+In the subsequent code lasso and ridge are estimated using the lm.penal function.  For visualization, two plots based on the lasso model are created. The first plots the results from the crossvalidation: lambda versus the mean squared error. For the second plot lm.penal is called again, but this time only with the x-variables that appear in the final model from the first call. This is to avoid an (even more) overloaded plot. The created plot illustrates how lasso works, as it shows which variables have a coefficient larger than zero, based on value  the regularization takes. 
+The remainder of the code is used to make a summarizing table that is then exportet to  a latex file. The results from the four models are firstly transformed to a dataframe using the outreg package. Since glmnet does not provide  a model that can be interpreted by outreg, at first placeholder regression results based on all variables are sent to outreg. In a second step, the dummy results are replaced by a vector that contains the actual ridge and lasso results as well as the manually caluclated $R^{2}$.  An excerpt of the results is then stored in latex format using x-table package. 
+
+Finally, the model fits are saved as objects to be used in further analysis in the quantlet "Model Comparision". 
+

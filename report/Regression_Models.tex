@@ -1,0 +1,163 @@
+\section{Regression Models: Theory}
+As it is well known from the Gauss-Markov theorem, there is no better linear unbiased estimator than the OLS estimator $\beta_{ols} = (X'X)^{-1}X'Y$  if the conditions for GM are met. However, in the here considered scencario we have a large number of possible regressors given the number of observations. Thus, including all variables in an OLS model would likely lead to overfitting, where our OLS-model would fit well on the training data, but would not generalize well to other data, especially the data it is later supposed to be applied on. In the worst case, perfect multicolinearity could occur (especially with regard to the dummy variables)  which means that some regressors are linear comibinations of the other. In this case, the inverse of the matrix $(X'X)$ does not exist any more beacuse of singularity which means $\beta_{OLS}$ cannot be calculated.  
+On the other hand, we still want to include all relevant variables, as we might oitherwise encounter omitted variable bias, and would also reduce the predicitve capabilities of our model. 
+While in econometric models  the selection of variables is usually based on theory, in the sceneario of this Kaggle challenge we do not have theoretical assumptions about our dataset. Therefore an alternative procedure for variable selection is needed. This quantlet implements four regression based methods and tests them on the Amis housing data. 
+
+\subsection{Backward Selection}
+One straightforward approach is backwards stepwise regression. While there are several approaches, one possibility is to  start with all variables (except those that are perfect linear combinations of others), and than eliminate insignificant variables based on a series of  t-tests. This procedure is repeated, until every variable is significant. This requires a decision on the threshold on which the significance of a regressor is decided, which is an arbritary number. Here, we rely on a $\alpha = 0.05$ threshold, as it is commonly used in econometric applications. 
+
+\subsection{Forward Selection}
+The second implemented model is forward selection based on the AIC (Akaike Information Criterion). The AIC is defined as 
+${\displaystyle \mathrm{AIC}=2k-2\ln({\hat{L}})}$, where $\hat{L}$ is the likelihood of a given model. The stepwise algorithm keeps adding variables until there is no further decrease in the AIC possible. This situation occurs, when the penalty term $2k$ exceeds the difference in likelihood due to the inclusion of further variables. 
+
+\subsection{Ridge and Lasso Regression}
+Ridge and Lasso regressions omit the assumption of an unbiased estimator. Both models include a penalizing term for the regressors, and therefore minimize the penalized sum of squares.  Written in a Lagrange - Multiplier form it is easy to see, that the only difference between both estimators is the $L^{p}$-norm: Ridge relies on an $L^{2}$-norm, while Lasso uses an  $L^{1}$-norm.  
+
+\begin{equation}
+\beta_{lasso}=argmin\{\frac{1}{2}.\sum_{t=1}^{N}(y_{t}-\beta_{0}-\sum_{j=1}^{p}x_{ij}\beta_{j})^{2}+\lambda\sum_{j=1}^{p}|\beta_{j}|\}
+\end{equation}
+
+\begin{equation}
+\beta_{ridge}=argmin\{\frac{1}{2}.\sum_{t=1}^{N}(y_{t}-\beta_{0}-\sum_{j=1}^{p}x_{ij}\beta_{j})^{2}+\lambda\sum_{j=1}^{p}\beta_{j}^{2}\}
+\end{equation}
+
+The different $L_^{p}$ norm however leads to a different behavior in both models: Ridge uses L2 penalty term which limits the size of the coefficient vector, a behaviour that is referred to as shrinkage. Thus, Ridge will return the original number of variables.  Lasso on the other hand will also result in sparsity, which means that some coefficients will get the value zero and therefore drop out of the model. 
+
+The question is now, how the hyperparamater $\lambda$ is chosen. We follow a cross validation approach, as it is common practice in machine learning. For this, a sequence of possible $\lambda$ values is tested on different splits into training and test data of the initial sample.  We rely on  k-fold cross-validation, where the dataset is split in k folds, and then each split is used once as testing data for validadtion, while the remaining folds funciton as training data. 
+Based on the Mean Squared Error, the optimal $\lambda$ parameter is then chosen. We use the first Standard deviation of the $\lambda$, that yields the lowest MSE, as this leads to more robust results, since overfitting is avoided. 
+
+it should be highlighted, that there is some critizism in the literature regarding the use of both stepwise as well as regularized models, especially that there use should be avoided if there are theoretical assumptions about the data and the interest lies in statistical inference. Since this is not the case and we are only concerned about the predictive performance of our models, this criticism can be relaxed. 
+
+
+\section{Regression Models: Implementation}
+\subsection{Backward Selection}
+The first model is a self implemented backward selection based on p-values.
+For this procedure, a function is written which requires a dataframe
+and the dependent variable. The idea is now, that in a loop y is regressed
+on all variables, and in each iteration the insignificant variables
+are dropped until every variable is significant. Firstly, all variables
+except the dependent variable are selected. Now a temporary dataframe
+is created and y is regressed on all avaiable variables using a linear
+model. The p-values of all variables are stored in a matrix, and except
+for the intercept the variable names are stored, which have a p-value
+of less than 0.05. In the next iteration, the procedure is repeated,
+until the count z of insignificant variables is zero and the loop
+ends. Alternatively, the loop ends after 300 iterations, to ensure
+that if there are no significnat variables it doenst run infinetly.
+In this case, a warning is returned. 
+Either way, the list of variables of the last iteration is returned and a linear model is fitted. 
+
+\begin{lstlisting}[language=R]
+sign.select = function(dframe, y) {
+    pvals          = 1
+    z              = 1
+    i              = 1
+    vars.selection = names(dframe)
+    vars.selection = vars.selection[!vars.selection %in% y]
+    while (z > 0) {
+        df.lm          = cbind(dframe[vars.selection], dframe[y])
+        lm1            = lm(formula(paste(y, "~ . ")), data = df.lm)
+        pvals          = summary(lm1)$coefficients[, 4]
+        pvals          = pvals[!names(pvals) %in% "(Intercept)"]
+        vars.selection = names(pvals[pvals < 0.05])
+        z              = sum(pvals > 0.05)
+        print(vars.selection)
+        i = i + 1
+        if (i == 300) {
+             warning("Did not finish in 300 iterations. No significant variables in data set?")
+             break
+        }
+     }
+     return(vars.selection)
+}
+
+vars   = sign.select(df, "logSalePrice")
+lm.fit = lm(logSalePrice ~ ., data = df[, c(vars, "logSalePrice")])
+summary(lm.fit)
+\end{lstlisting}
+\subsection{Forward selection}
+The second model is a forward selection based on the package step. Firstly a minimal (none.fit) and a maximal model (all.fit) are defined. Starting from the minimal model, the step-algorithm selects the variable which inclusion would lead to the smallest AIC. Those steps are repeated, until no additional variable leads to a sufficently large increase in the AIC, as explained in section XX. 
+For visualization, the AIC values are plotted against the number of variables. for this, a dataframe of number of variables and korresponding AIC is created and then passed on to the function ggplot.
+
+\subsubsection{Ridge and Lasso}
+\subsection{Ridge and Lasso}
+For ridge and lasso regression the dataset is again split in dependent
+and independent variables. Based on the package glmnet, a function is implemented 
+that performs either lasso or ridge regression, where the optimal
+penalizing term lambda is selected based on a 10 fold cross validation.
+
+Since Lasso and rigde only differ in the parameter alpha (eihter 0
+or 1), the same function can be used for both procedures. 
+The function requires an input of x variablexs, the dependent variable y and the choice "lasso" or "ridge". Firstly it is determined, if the input was correct and which alpha results. If the input is incorrent, the functions stops with an error message.
+Then the glmnet function cv.glmnet is used to select the optimal paramter lambda. 
+Based on the x values, we can then use the predict function to predict the y values, and calculated the corresponding $R^{2}$.
+For plotting, the  To make a nicely looking comparision table in later steps, table of coefficients and variable names is created. Also, a list of nonzero coefficients is returned, the object from cvfit whihc will be used for plotting, as well as a manually caluclated R squared.
+\begin{lstlisting}[language=R]
+#ridge and lasso regression function to estimate the optimal penalty parameter lambda
+#with 10-fold cross validation
+lm.penal = function(type, x, y) {
+    if (type == "lasso") {
+        alpha = 1
+    } else if ( type == "ridge") {
+        alpha = 0
+    } else
+        stop("type must be either ridge or lasso")
+    cvfit          = cv.glmnet(x, y, alpha = alpha, nfolds = 10)
+    c              = coef(cvfit, s = "lambda.1se")
+    inds           = which(c != 0)
+    variables      = row.names(c)[inds]
+    vars.selection = variables[!variables %in% "(Intercept)"]
+    coeftable      = data.frame(var = variables,
+        coeff            = c[inds],
+        stringsAsFactors = FALSE)
+    fit            =  predict(cvfit,newx=x, s="lambda.1se")
+    sst            = sum(y^2)
+    sse            = sum((fit - y)^2)
+    # R squared
+    rsq            = 1 - sse / sst
+    c              = round(c, digits = 3)
+    rsq            = round(rsq, digits = 2)
+    output         = list(vars.selection, coeftable, c, cvfit, fit, rsq)
+}
+#perform regressions
+lasso = lm.penal(type = "lasso", x = x, y = y)
+ridge = lm.penal(type = "ridge", x = x, y = y)
+\end{lstlisting}[language=R]
+
+
+
+In the subsequent code lasso and ridge are estimated using the lm.penal function.  For visualization, two plots based on the lasso model are created. The first plots the results from the crossvalidation, that is lambda versus the mean squared error. For the second plot lm.penal is called again, this trime only with the X-Variables  that appear in the final model from the first call. This is to avoid an (even more) overloaded plot. This plot illustrates how lasso works, as it shows which variables have a coefficient larger than zero, based on value  the Regularization takes. 
+The remainder of the code is used to make a summarizing table that is then exportet to  a latex file. The results from the four models are firstly transformed to a dataframe using the outreg package. 
+Howwever, since glmnet does not provide  a model that can be interpreted by outreg, a regression with all coefficients is sent to outreg and functions a dummy or placeholder. in the second step, the placeholder results are replaced by a vector that cotains the actual ridge and lasso results as well as the manually caluclated $R^{2}$.  An Excerpt of the results is then stored using x-table. 
+
+Finally, the model fits are saved as objects to be used in further analysis in the quantlet model comparision. 
+
+
+\section{Test with the Amis Dataset}
+We apply Amis dataset (train.csv) to the quantlet "data prepocessing".
+after trivial parts of the code, the first function returns the number of missing values.  there are 19 variables with missing values, from which 14 have a meaning according to the data description. 
+\autoref{fig:step} visualizes the decrease in the AIC when further variables are included. In the Amis Dataset, the stepwise regression stops at around 80 variables. Clearly the drecrease in AIC is very large in the beginning, and smaller towards the end. 
+
+
+
+\begin{figure}
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/step\string".pdf}
+  \caption{AIC versus number of variables in forward stepwise regression}\label{fig:step}
+\end{figure}
+
+
+
+
+
+
+
+To check some assumptions of linear regression models, to plots are
+created. While it is possible to create these plots using inbuilt
+R functions, we want show that it is also possible to do these plots
+using the package ggplot, which provides asthetically appealing graphs,
+provides more options and is a good choice when plots are complex
+or combined with other plots. The residuals versus fitted plot is
+straightforward, however, the qqplot requires to firstly calculate
+the theoretical and empirical quantiles to include the ideal line
+in the graph. From the quantiles, intercept and slope are calculatet. 

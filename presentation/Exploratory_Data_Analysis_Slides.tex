@@ -1,0 +1,39 @@
+
+\section{Exploratory Data Analysis}
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Data Structure / Quality}
+\begin{itemize}
+\item 2919 Observations separated into 1460 labelled training observations and 1459 unlabelled test observations to predict.
+\item Target Variable: Final Sale Price in USD
+\item 79 Explanatory Variables of which 36 are numeric (e.g. floor area) and 43 categoric (e.g. heating type).
+\item 19 variables contain NA's 16 of which are categoric variables
+\item NA usually means a variable is not applicable (Pool Quality if house has no pool) instead of missing data
+\end{itemize}
+}
+
+% 1-2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Sale Price Distribution}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{minipage}[c][0.4\textheight][c]{\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{\string"../quantlets/Exploratory_Data_Analysis/PriceHist\string".pdf}
+\end{minipage}
+\begin{minipage}[c][0.4\textheight][c]{\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{\string"../quantlets/Exploratory_Data_Analysis/LogPriceHist\string".pdf}
+\end{minipage}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item Original price distribution heavily skewed
+\item Log transformed House Prices seem to be normally distributed
+\end{itemize}
+\end{column}
+\end{columns}
+}

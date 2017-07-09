@@ -1,0 +1,183 @@
+\section{Exploratory Data Analysis Dependence}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Quantlet: Exploratory Data Analysis: Dependence}
+\begin{itemize}
+\item aim of this quantlet: show relations between variables, especially the target variable SalePrice 
+\item producing different graphical representations
+\begin{itemize}
+\item correlation matrix	
+\item barplot  
+\item boxplots 
+
+\end{itemize}
+
+\end{itemize}
+}
+
+% 1-2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Correlation Matrix of all numeric variables: Code}
+
+\begin{lstlisting}[basicstyle=\tiny][language=R]
+corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, significance = 0.05) {
+	corr.numeric =cor(na.omit(numeric.data)) 
+	find.rows = apply(corr.numeric, 1, function(x) sum(abs(x)> 					abs(cut.value))>1)
+	corr.numeric.adjusted = corr.numeric[find.rows, find.rows]
+	low.corr = colnames(corr.numeric) %in%										colnames(corr.numeric.adjusted)
+
+    pdf("Corrplot.pdf")
+    if (corr.test == FALSE) {
+        corrplot(corr.numeric.adjusted, method = "square")
+    } else {
+        corrplot(corr.numeric.adjusted, 
+        p.mat =	correlation.test(corr.numeric.adjusted),
+        sig.level = ignificance, method = "square")
+    }
+    dev.off()
+    
+    if (corr.mat == TRUE) 
+        return(corr.numeric.adjusted)
+  }
+
+\end{lstlisting}
+
+\end{frame}
+%1-3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Correlation Matrix of all numeric variables: Code ctd.}
+\begin{lstlisting}[basicstyle=\tiny][language=R]
+correlation.test = function(corr.data) {
+    corr.data            = as.matrix(corr.data)
+    n                    = ncol(corr.data)
+    p.value.matrix       = matrix(NA, n, n)
+    diag(p.value.matrix) = 0
+    
+    for (i in 1:(n - 1)) {
+     for (j in (i + 1):n) {
+      tmp = cor.test(corr.data[, i], corr.data[, j])            
+      p.value.matrix[i, j] = p.value.matrix[j, i] = tmp$p.value 
+            }
+      colnames(p.value.matrix) = rownames(p.value.matrix) =          		  colnames(corr.numeric.adjusted))
+        }
+	return(p.value.matrix)
+    }
+\end{lstlisting}
+
+\end{frame}
+% 1-4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Plot of Correlations (Corrplot)}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis_Dependence/Corrplot\string".pdf}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item A cut-off value of 0.3 was used: Variables with no correlation over 0.3 do not show up in the plot
+\item A significance level of 0.5 was used to test the correlations (crosses indicate no significance)
+\end{itemize}
+\end{column}
+\end{columns}
+}
+
+% 1-5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Barplot: Code}
+
+\begin{lstlisting}[basicstyle=\tiny][language=R]
+corr.barplot = function(numb.corr = 36) {
+        correlation.vars    = names(numeric.data) %in% c("SalePrice")
+        correlation.data    = numeric.data[!correlation.vars]                  
+        correlations        = vector(length = 										length(names(correlation.data)))
+        names(correlations) = names(correlation.data)        
+        for (i in names(correlation.data)) {                                   
+            correlations[i] = cor(numeric.data$SalePrice, 							correlation.data[i], use = "pairwise.complete.obs")}        
+        
+        y.plotting = correlations[order(abs(correlations), 
+           decreasing = TRUE)][1:numb.corr]
+        x.plotting = names(y.plotting)
+        names(y.plotting) = NULL
+        df = data.frame(x.plotting, y.plotting)
+        df$x.plotting = factor(df$x.plotting, levels = 
+           df[order(df$y.plotting, decreasing = TRUE), "x.plotting"])
+        
+        ggplot(data = df, aes(x.plotting, y.plotting), fill = as.factor(x.plotting)) + geom_bar(stat = "identity") + 
+            theme(axis.title.x = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, size = 10)) + 
+            ylab("Correlation") + ggtitle(paste("Barplot of the", numb.corr, "highest bivariate correlations with SalePrice", 
+            sep = " "))
+}
+
+\end{lstlisting}
+
+\end{frame}
+
+% 1-5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Ordered barplot for the correlations with SalePrice}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+%\includegraphics[width=\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis_Dependence/Barplot_ordered\string".pdf}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item The plot shows the 20 highest correlated numeric variables
+\item The few negative correlations are not plotted, since they are very low 
+\end{itemize}
+\end{column}
+\end{columns}
+}
+
+
+% 1-5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Boxplot: Code}
+
+\begin{lstlisting}[basicstyle=\tiny][language=R]
+boxplot.target = function(categoric) {
+        categoric.x = data[, categoric]
+        plot.data = as.data.frame(cbind(data$SalePrice, categoric.x))
+        plot.data[[2]] = as.factor(plot.data[[2]])
+        levels(plot.data[[2]]) = levels(categoric.x)
+        
+        ggplot(plot.data, aes(x = categoric.x, y = V1)) +			geom_boxplot() + 
+          labs(title = paste("Boxplots of SalePrice", 
+            "\n", "depending on", categoric, sep = " "), 
+             x = categoric, y = "SalePrice")
+}
+
+\end{lstlisting}
+\end{frame}
+
+% 1-6
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Boxplots of SalePrice}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis_Dependence/boxplot_1through6\string".pdf}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item Example of boxplots for SalePrice based on the levels of categorical variables
+\item Differences in median and spread across levels indicate a possibly good predictor variable 
+\end{itemize}
+\end{column}
+\end{columns}
+}
+
+
+
+
+

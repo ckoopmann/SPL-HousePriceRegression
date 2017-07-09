@@ -1,0 +1,16 @@
+
+Name of Quantlet: Regression_Models
+
+Published in: 'Statistical programming languages - Student Project on "House Prices: Advanced Regression Techniques" '
+
+Description: 'Performs three methods to select appropiate variables in a machine lerning approach: LASSO regression, Ridge regression and a selection of variables based on significance. Several graphs are produced: For LASSO regression two plots are created, that show the optimal lambda value and which variables enter the model at which value of lambda. For the final regression model from the significance selection, a qqplot and a residuals versus fitted values plot are created. A table to compare all models is created in latex format.'
+
+Keywords: Lasso, Ridge, Regression, mean squared error, MSE, qqplot, penalty, residuals, postestimation
+
+Author: Christian Koopmann, Felix Skarke, Enno Tammena
+
+Submitted:  10.06.2017
+
+Input: 'train_preprocessed.csv'
+
+Output: qqplot.pdf, rvfplot.pdf, lasso.pdf, lasso_lambda.pdf, reg_table.tex

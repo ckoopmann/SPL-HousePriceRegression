@@ -1,0 +1,94 @@
+
+\section{Regression Models}
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Quantlet: Regression Models}
+\begin{itemize}
+\item aim of this quantlet: select appropriate variables 
+\item four selection procedures
+\begin{itemize}
+\item Backwards Selection based on significance
+\item Forward Selection based on AIC
+\item LASSO 
+\item Ridge 
+
+\end{itemize}
+
+\end{itemize}
+}
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Significance Selection: Code}
+
+\begin{lstlisting}[language=R]
+sign.select = function(dframe, y) {
+pvals = 1, z     = 1, i     = 1
+vars  = names(dframe)
+vars  = vars[!vars %in% y]
+while(z>0){
+    df.lm = cbind(dframe[vars], dframe[y])
+    lm1   = lm(formula(paste(y,"~ . ")) ,data=df.lm)
+    pvals = summary(lm1)$coefficients[,4]
+    pvals = pvals[!names(pvals) %in% "(Intercept)"]
+    vars  = names(pvals[pvals<0.05])
+    #z = sum(pvals>0.05),     i = i+1
+    if(i==300){
+        warning("... No signif. Vars in Data Set?")
+        break
+        }
+}
+return(vars)
+}
+
+\end{lstlisting}
+
+\end{frame}
+
+
+
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{LASSO: Code}
+
+\begin{lstlisting}[language=R]
+lm.penal = function(type, x, y) {
+    if (type == "lasso") {        alpha = 1
+    } else if ( type == "ridge") {alpha = 0
+    } else stop("type must be ridge or lasso")
+    cvfit     = cv.glmnet(x, y, alpha = alpha, nfolds = 10)
+    fit       = predict(cvfit,newx=x,s="lambda.1se")
+    rsq       = 1 - sum(y^2)/sum((fit - y)^2)
+    c         = coef(cvfit, s = "lambda.1se")
+    inds      = which(c != 0)
+    var = row.names(c)[inds]
+    vars.sele = var[!variables %in% "(Intercept)"]
+    coeftable = data.frame(var = var, coeff = c[inds], stringsAsFactors = F)
+    output    = list(vars.sele, coeftable, c, cvfit, fit, rsq)
+}
+
+\end{lstlisting}
+
+\end{frame}
+
+
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{LASSO Results}
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/lasso\string".pdf}
+}
+
+
+% 1-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame{
+\frametitle{Regression Models Results (Excerpt)}
+\tiny
+\input{\string"../quantlets/Regression_Models/reg_table\string".tex}
+}

@@ -1,0 +1,42 @@
+
+\section{Test with the Amis Dataset}
+We apply Amis dataset (train.csv) to the quantlet "data prepocessing".
+after trivial parts of the code, the first function returns the number of missing values.  there are 19 variables with missing values, from which 14 have a meaning according to the data description. 
+\autoref{fig:step} visualizes the decrease in the AIC when further variables are included. In the Amis Dataset, the stepwise regression stops at around 80 variables. Clearly the drecrease in AIC is very large in the beginning, and smaller towards the end. 
+
+
+
+\begin{figure}
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/step\string".pdf}
+  \caption{AIC versus number of variables in forward stepwise regression}\label{fig:step}
+\end{figure}
+
+
+\begin{figure}
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/lasso_lambda\string".pdf}
+  \caption{Mean squared error versus the tested lambda values. Results from cross validation procedure for lasso.}\label{fig:step}
+\end{figure}
+
+
+\begin{figure}
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/lasso\string".pdf}
+  \caption{Illustration of variable selection for lasso based on the regularization term}\label{fig:step}
+\end{figure}
+
+\input{\string"../quantlets/Regression_Models/reg_table\string".tex}
+
+
+
+
+To check some assumptions of linear regression models, to plots are
+created. While it is possible to create these plots using inbuilt
+R functions, we want show that it is also possible to do these plots
+using the package ggplot, which provides asthetically appealing graphs,
+provides more options and is a good choice when plots are complex
+or combined with other plots. The residuals versus fitted plot is
+straightforward, however, the qqplot requires to firstly calculate
+the theoretical and empirical quantiles to include the ideal line
+in the graph. From the quantiles, intercept and slope are calculatet. 

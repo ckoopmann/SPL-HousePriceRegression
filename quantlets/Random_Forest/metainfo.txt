@@ -1,0 +1,17 @@
+
+Name of Quantlet: Random_Forest
+
+Published in: 'Statistical programming languages - Student Project on "House Prices: Advanced Regression Techniques" '
+
+Description: 'Reads in preprocessed train data and, trains and tunes RF and GBM Models and saves both the models as well as tuning results in graphical and tabular form'
+
+Keywords: Random Forest, Gradient Boosting Machine, Tuning, caret, cross validation
+
+Author: Christian Koopmann, Felix Skarke, Enno Tammena
+
+See also: 
+
+Submitted:  28.06.2017
+
+Input: 'train_preprocessed.csv'
+Output: gbm.RData, gbmresults.tex, gbm_rmse.pdf, gbm_rsq.pdf, rf.RData, rfresults.tex, rf_imp.pdf, rf_rmse.pdf, rf_rsq.pdf

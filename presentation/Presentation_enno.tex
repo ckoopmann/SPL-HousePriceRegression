@@ -1,0 +1,66 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{eso-pic}
+\usepackage{mathrsfs}
+\usepackage{url}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{booktabs}
+% \usepackage{bbm}
+\usepackage{cooltooltips}
+\usepackage{colordef}
+\usepackage{beamerdefs}
+\usepackage{lvblisting}
+\usepackage{listings}
+
+\pgfdeclareimage[height=2cm]{logobig}{hulogo}
+\pgfdeclareimage[height=0.7cm]{logosmall}{hulogo}
+
+\renewcommand{\titlescale}{1.0}
+\renewcommand{\titlescale}{1.0}
+\renewcommand{\leftcol}{0.6}
+
+\title[House Prices: Advanced Regression Techniques]{Statistical programming languages - \textit{House Prices: Advanced Regression Techniques}}
+\authora{Christian Koopmann}
+\authorb{Felix Skarke}
+\authorc{Enno Tammena}
+
+\def\linka{http://lvb.wiwi.hu-berlin.de}
+\def\linkb{}
+\def\linkc{}
+
+\institute{Ladislaus von Bortkiewicz Chair of Statistics \\
+Humboldt--Universitaet zu Berlin \\}
+
+\hypersetup{pdfpagemode=FullScreen}
+
+\begin{document}
+\lstset{language=R}
+% 0-1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frame[plain]{
+
+\titlepage
+}
+
+% No Number on the Outline Slide
+\useheadtemplate{%
+    \raisebox{-0.75cm}{\parbox{\textwidth}{%
+            \footnotesize{\color{isegray}%
+                \insertsection\ \leavevmode\leaders\hrule height3.2pt depth-2.8pt\hfill\kern0pt\ }}}
+}
+
+
+
+
+\include{Exploratory_Data_Analysis_Dependence}
+\include{Preprocessing_Slides}
+ \include{Regression_Models_Slides}
+\end{document}
