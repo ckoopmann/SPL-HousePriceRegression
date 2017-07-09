@@ -11,7 +11,7 @@ lapply(libraries, function(x) if (!(x %in% installed.packages())) {
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
 # setting up working directory
-setwd("C:/Users/Felix/Uni/SPL/HousePriceRegression/quantlets/Model_Comparison")
+setwd("C:/Users/Felix/Uni/Programming/SPL-HousePriceRegression/quantlets/Model_Comparison")
 
 # Read in pre-processed Data:
 train = read.csv("train_preprocessed.csv")
@@ -115,7 +115,7 @@ print(modelcomparison_latex, file = "modelcomparison.tex")
 predictions.lm = predict(lm.fit, newdata = test)                        # predicting the outcome for test data
 df.lm.fit      = data.frame(cbind(test$logSalePrice, predictions.lm ))  # creating dataframe containing real and predicted outcome
 
-lm.plot = ggplot(df.lm.fit, aes(test$logSalePrice, predictions.lm)) + geom_point() + geom_segment(x = -4, 
+lm.plot = ggplot(df.lm.fit, aes(V1, predictions.lm)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "lm.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "lm"], sep = " "), x = -3, y = 3) + annotate("text", 
@@ -126,7 +126,7 @@ lm.plot = ggplot(df.lm.fit, aes(test$logSalePrice, predictions.lm)) + geom_point
 predictions.fwd = predict(fwd.fit, newdata = test)
 df.fwd.fit      = data.frame(cbind(test$logSalePrice, predictions.fwd))
 
-fwd.plot = ggplot(df.fwd.fit, aes(test$logSalePrice, predictions.fwd)) + geom_point() + geom_segment(x = -4, 
+fwd.plot = ggplot(df.fwd.fit, aes(V1, predictions.fwd)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "fwd.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "fwd"], sep = " "), x = -3, y = 3) + 
@@ -137,7 +137,7 @@ fwd.plot = ggplot(df.fwd.fit, aes(test$logSalePrice, predictions.fwd)) + geom_po
 predictions.lasso = predict(lasso.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
 df.lasso.fit      = data.frame(cbind(test$logSalePrice, predictions.lasso))
 
-lasso.plot = ggplot(df.lasso.fit, aes(test$logSalePrice, predictions.lasso)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
+lasso.plot = ggplot(df.lasso.fit, aes(V1, predictions.lasso)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "lasso.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "lasso"], sep = " "), x = -3, y = 3) + 
@@ -148,7 +148,7 @@ lasso.plot = ggplot(df.lasso.fit, aes(test$logSalePrice, predictions.lasso)) + g
 predicions.ridge = predict(ridge.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
 df.ridge.fit     = data.frame(cbind(test$logSalePrice, predicions.ridge))
 
-ridge.plot = ggplot(df.ridge.fit, aes(test$logSalePrice, predicions.ridge)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
+ridge.plot = ggplot(df.ridge.fit, aes(V1, predicions.ridge)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "ridge.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "ridge"], sep = " "), x = -3, y = 3) + 
@@ -159,7 +159,7 @@ ridge.plot = ggplot(df.ridge.fit, aes(test$logSalePrice, predicions.ridge)) + ge
 predictions.gbm = predict(gbmtuned, newdata = test)
 df.gbm          = data.frame(cbind(test$logSalePrice, predictions.gbm))
 
-gbm.plot = ggplot(df.gbm, aes(test$logSalePrice, predictions.gbm)) + geom_point() + geom_segment(x = -4, 
+gbm.plot = ggplot(df.gbm, aes(V1, predictions.gbm)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "gbmtuned predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "gbm"], sep = " "), x = -3, y = 3) + 
@@ -170,7 +170,7 @@ gbm.plot = ggplot(df.gbm, aes(test$logSalePrice, predictions.gbm)) + geom_point(
 predictions.rf = predict(rftuned, newdata = test)
 df.rf          = data.frame(cbind(test$logSalePrice, predictions.rf))
 
-rf.plot = ggplot(df.rf, aes(test$logSalePrice, predictions.rf)) + geom_point() + geom_segment(x = -4, 
+rf.plot = ggplot(df.rf, aes(V1, predictions.rf)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "rftuned predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "rf"], sep = " "), x = -3, y = 3) + annotate("text", 
@@ -178,7 +178,6 @@ rf.plot = ggplot(df.rf, aes(test$logSalePrice, predictions.rf)) + geom_point() +
 
 
 # plotting resulting graphs together
-source("multiplot.R")
 
 plot.list = list(lm.plot, fwd.plot, lasso.plot, ridge.plot, gbm.plot, rf.plot) # list of all graphs
 plot.loop = seq(length(plot.list))
@@ -187,7 +186,7 @@ plot.loop = plot.loop[seq(length(plot.list)) %% 2 != 0]
 pdf("Model_comparison.pdf", onefile = TRUE)           
 for (i in plot.loop) {                                                         # looping through all models, creating a pdf with two plots per page for readability
     j = i + 1
-    multiplot(plot.list[[i]], plot.list[[j]])  
+    grid.arrange(grobs = list(plot.list[[i]], plot.list[[j]]))  
 }
 dev.off()
 
