@@ -1,9 +1,5 @@
-*.csv
-*.RData
-*.Rd
 *.Rproj
 *.DS_Store
-*.pdf
 *.aux
 *.log
 *.snm
@@ -13,4 +9,3 @@
 *.out
 *.vrb
 *.synctex.gz
-*.png
