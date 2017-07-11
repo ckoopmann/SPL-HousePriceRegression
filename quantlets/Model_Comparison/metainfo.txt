@@ -13,5 +13,5 @@ See also:
 
 Submitted:  10.06.2017
 
-Input: 'train_preprocessed.csv', 'test_preprocessed.csv', 'gbm.RData', 'rf.RData', 'regression_models_fit.RData', 'multiplot.R' 
+Input: 'train_preprocessed.csv', 'test_preprocessed.csv', 'gbm.RData', 'rf.RData', 'regression_models_fit.RData' 
 Output: 'Model_Comparison.pdf', 'modelcomparison.tex'
