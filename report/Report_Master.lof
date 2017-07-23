@@ -1,4 +1,0 @@
-\select@language {english}
-\contentsline {figure}{\numberline {1}{\ignorespaces AIC versus number of variables in forward stepwise regression}}{12}{figure.1}
-\contentsline {figure}{\numberline {2}{\ignorespaces Mean squared error versus the tested lambda values. Results from cross validation procedure for lasso.}}{13}{figure.2}
-\contentsline {figure}{\numberline {3}{\ignorespaces Illustration of variable selection for lasso based on the regularization term}}{13}{figure.3}

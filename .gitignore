@@ -9,3 +9,5 @@
 *.out
 *.vrb
 *.synctex.gz
+*.lof
+*.lot
