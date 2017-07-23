@@ -1,4 +1,4 @@
-# rm(list = ls())
+      # rm(list = ls())
 #setwd('quantlets/Random_Forest')
 # Cross Validation Parameter
 ptrain      = 0.85
@@ -12,7 +12,7 @@ intdepth.tuning   = 1
 shrinkage.tuning  = seq(0.01, 0.15, by = 0.01)
 minobs.tuning     = 10
 # install and load packages
-libraries = c("ggplot2", "randomForest", "caret", "doParallel", "gbm", "xtable")
+libraries = c("ggplot2", "randomForest", "caret", "doParallel", "gbm", "xtable", "rpart","rpart.plot")
 lapply(libraries, function(x) if (!(x %in% installed.packages())) {
     install.packages(x)
 })
@@ -90,3 +90,8 @@ ggsave(gbmrmse, filename = "gbm_rmse.pdf", width = 20, height = 10, units = 'cm'
 gbmrsq = ggplot(data = gbmresults, aes(x = shrinkage, y = Rsquared, col = n.trees)) + geom_line() + ggtitle("R Squared vs. Tuning Parameter Shrinkage") + 
     xlab("Shrinkage") + ylab("R Squared")
 ggsave(gbmrsq, filename = "gbm_rsq.pdf", width = 20, height = 10, units = 'cm')
+#Visualise single regression tree for illustration in Report
+tree = rpart(logSalePrice ~ ., data = df)
+pdf(file = "tree.pdf", width = 7, height = 7)
+rpart.plot(tree, compress = TRUE)
+dev.off()
