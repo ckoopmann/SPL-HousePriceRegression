@@ -1,8 +1,5 @@
-
-
-
-\section{Regression Models: Implementation}
-\subsection{Backward Selection}
+\subsection{Regression Models}
+\subsubsection{Backward Selection}
 The first model is a self implemented backward selection based on p-values. For this, a function is written which requires a dataframe and the dependent variable. The dependent variable y is regressed on the remaining variables 
 in a loop, in which at each iteration the insignificant variables
 are dropped until every variable is significant. 
@@ -43,12 +40,12 @@ vars   = sign.select(df, "logSalePrice")
 lm.fit = lm(logSalePrice ~ ., data = df[, c(vars, "logSalePrice")])
 summary(lm.fit)
 \end{lstlisting}
-\subsection{Forward selection}
+\subsubsection{Forward selection}
 The forward selection is based on the package step. Firstly a minimal (none.fit) and a maximal model (all.fit) are defined. Starting from the minimal model, the step-algorithm selects the variable which inclusion would lead to the smallest AIC. Those steps are repeated, until no additional variable leads to a sufficently large increase in the AIC, as explained in section XX. 
 For visualization, the AIC reduction is plotted against the number of variables. For this, a dataframe with the respective number of variables and corresponding AICs is created and then passed to the function ggplot.
 
+
 \subsubsection{Ridge and Lasso}
-\subsection{Ridge and Lasso}
 The function lm.penal Based on the package glmnet, a function is implemented  that performs either lasso or ridge regression, where the optimal penalizing term lambda is selected based on a 10 fold cross validation. lm.penal requires an input of x variablexs, the dependent variable y and the choice "lasso" or "ridge". Firstly it is determined, if the input for type was correct and which alpha results from it. If the input is incorrent, the functions stops with an error message.
 Then the glmnet function cv.glmnet is used to select the optimal paramter lambda. To obtain fitted values for y,  the predict function is used  to predict the outcome based on the x variables. The corresponding $R^{2}$ is calculated.
 To make a nicely looking comparision table in later steps, a table of coefficients and variable names is created. The function returns different objects for plotting and the later created comparision table.

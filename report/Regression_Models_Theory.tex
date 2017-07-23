@@ -1,16 +1,16 @@
-\section{Regression Models: Theory}
+\subsection{Regression Models: Theory}
 As it is well known from the Gauss-Markov theorem, there is no better linear unbiased estimator than the OLS estimator $\beta_{ols} = (X'X)^{-1}X'Y$  if the conditions for GM are met. However, in the here considered scencario we have a large number of possible regressors given the number of observations. Thus, including all variables in an OLS model would likely lead to overfitting, where our OLS-model would fit well on the training data, but would not generalize well to other data, especially the data it is later supposed to be applied on. In the worst case, perfect multicolinearity could occur (especially with regard to the dummy variables)  which means that some regressors are linear comibinations of the other. In this case, the inverse of the matrix $(X'X)$ does not exist any more beacuse of singularity which means $\beta_{OLS}$ cannot be calculated.  
 On the other hand, we still want to include all relevant variables, as we might oitherwise encounter omitted variable bias, and would also reduce the predicitve capabilities of our model. 
 While in econometric models  the selection of variables is usually based on theory, in the sceneario of this Kaggle challenge we do not have theoretical assumptions about our dataset. Therefore an alternative procedure for variable selection is needed. This quantlet implements four regression based methods and tests them on the Amis housing data. 
 
-\subsection{Backward Selection}
+\subsubsection{Backward Selection}
 One straightforward approach is backwards stepwise regression. While there are several approaches, one possibility is to  start with all variables (except those that are perfect linear combinations of others), and than eliminate insignificant variables based on a series of  t-tests. This procedure is repeated, until every variable is significant. This requires a decision on the threshold on which the significance of a regressor is decided, which is an arbritary number. Here, we rely on a $\alpha = 0.05$ threshold, as it is commonly used in econometric applications. 
 
-\subsection{Forward Selection}
+\subsubsection{Forward Selection}
 The second implemented model is forward selection based on the AIC (Akaike Information Criterion). The AIC is defined as 
 ${\displaystyle \mathrm{AIC}=2k-2\ln({\hat{L}})}$, where $\hat{L}$ is the likelihood of a given model. The stepwise algorithm keeps adding variables until there is no further decrease in the AIC possible. This situation occurs, when the penalty term $2k$ exceeds the difference in likelihood due to the inclusion of further variables. 
 
-\subsection{Ridge and Lasso Regression}
+\subsubsection{Ridge and Lasso Regression}
 Ridge and Lasso regressions omit the assumption of an unbiased estimator. Both models include a penalizing term for the regressors, and therefore minimize the penalized sum of squares.  Written in a Lagrange - Multiplier form it is easy to see, that the only difference between both estimators is the $L^{p}$-norm: Ridge relies on an $L^{2}$-norm, while Lasso uses an  $L^{1}$-norm.  
 
 \begin{equation}
