@@ -1,4 +1,4 @@
-\subsection{Random Forest}
+\subsubsection{Random Forest}
 Before analysing the tuning results of the Random Forest model we will take a look at the variable importance measures for each variable. In this case we use the normalized importance based on the permutation error as described above. As we can see in Tables \ref{tab:importance1} to \ref{tab:importance6} there is a very large difference in variable importance between the top two variables in importance (Overall Quality and the first Principal Component) and the remaining variable. Also we can see that more than half of all variables have an importance score of almost zero, meaning permutating their values has almost no effect on prediction accuracy relative to the effect of the strongest variable. 
 We have tuned the Random Forest across a grid consisting of 8 different values for the \textit{mtry} at intervals of 20 in the range 20-160. As we can see in Figure \ref{fig:rf_rmse} the Root Mean Squared Error takes its minimum at $mtry = 60$. Figure \ref{fig:rf_rsq} shows that $R^2$ is also maximised at the same level. The detailed values for both metrics can be read from Table \ref{tab:rfresults}.
 
