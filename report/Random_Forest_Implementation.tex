@@ -7,7 +7,7 @@ ptrain      = 0.85
 nfolds      = 5
 nrepeats    = 1
 # Tuning Parameter Values for Random Forest
-mtry.tuning = c(10, 20, 30, 40, 50)
+mtry.tuning = seq(from = 20, to = 160, by = 20)
 # Parameter Tuning based on caret package Choose Valdation Method
 CrossValidation = trainControl(method = "repeatedcv", number = nfolds, p = ptrain, repeats = nrepeats)
 # Create Random Forest Tuning Grid:
