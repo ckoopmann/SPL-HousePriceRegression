@@ -1,42 +1,41 @@
 
 \subsubsection{Regression Models}
-We apply Amis dataset (train.csv) to the quantlet "data prepocessing".
-after trivial parts of the code, the first function returns the number of missing values.  there are 19 variables with missing values, from which 14 have a meaning according to the data description. 
+The first model is the self implemented backwards selection. After three iterations, the final selection returns 32 variables which are all significiant at a level of at leas $\alpha=0.05$. 
+The second model is the stepwise forward selection based on the AIC. The $R^{2}$ is about 0.90, which means that about 90\% of variance is explained by this model (in the training data!).
 \autoref{fig:step} visualizes the decrease in the AIC when further variables are included. In the Amis Dataset, the stepwise regression stops at around 80 variables. Clearly the drecrease in AIC is very large in the beginning, and smaller towards the end. 
+The final model shows an even higher explanatory power, as the  $R^{2}$  is about 0.91. 
 
-
-
-\begin{figure}
+\begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/step\string".pdf}
   \caption{AIC versus number of variables in forward stepwise regression}\label{fig:step}
 \end{figure}
 
-
-\begin{figure}
+The regularization models yield a similar performance. 
+ 
+\begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/lasso_lambda\string".pdf}
-  \caption{Mean squared error versus the tested lambda values. Results from cross validation procedure for lasso.}\label{fig:step}
+  \caption{Mean squared error versus the tested lambda values. Results from cross validation procedure for lasso.}\label{fig:lasso}
 \end{figure}
 
+For the lasso, \autoref{fig:lasso} shows the crossvalidation results. Shown here is  MSE versus the logarithm of the different $\lambda$ values that where tried in the CV-procedure. The dashed vertical lines show the $\lambda$ where the MSE is minimal (left line) respectively the first standard deviation of that $\lambda$ value (right line). Thus, the model suggested by the cross validation uses a $\lambda = \exp{-2.85}=0.058$. 
 
-\begin{figure}
+Based on this hyperparameter 33 variables have a coefficient unequal $0$, resulting in a $R^{2}$ of 0.87. 
+
+\begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/lasso\string".pdf}
-  \caption{Illustration of variable selection for lasso based on the regularization term}\label{fig:step}
+  \caption{Illustration of variable selection for lasso based on the regularization term}\label{fig:lasso1}
 \end{figure}
 
-\input{\string"../quantlets/Regression_Models/reg_table\string".tex}
+The trace plot (\autoref{fig:lasso1}) visualizes how the regularization in lasso results in both sparsity and shrinkage. The graph shows how the coefficients change depending on the extent of regularization. If there is no regularization, which is the case when $\lambda=0$, the solution is just like the OLS-Solution. In this situation, the L1-Norm is zero. When the lambda value is large, the L1-norm also takes larger values, and , the sparser the model gets, which is a result of coefficients that are shrinked to zero. The trace plot for instance shows, that the variable  "Comp. 1", which is the first extracted component (see Section XX) is the most important variable, as it is the variable that is even in the most regularized model.  
 
+For ridge, the hyperparameter is $\lambda = 1.06$, which results in in the same $R^{2}$ -value. As expected (see section XX), Ridge returns the original number of variables. 
 
+\autoref{table:regs} summarizes the results of the different selection mechanisms. Apart from the above described differences in number of variables and R² squared the table shows, that the regularized models also include variables that are not significant in the stepwise models, which means that at least in the training sample these variables appear to have some predictive power. 
 
-
-To check some assumptions of linear regression models, to plots are
-created. While it is possible to create these plots using inbuilt
-R functions, we want show that it is also possible to do these plots
-using the package ggplot, which provides asthetically appealing graphs,
-provides more options and is a good choice when plots are complex
-or combined with other plots. The residuals versus fitted plot is
-straightforward, however, the qqplot requires to firstly calculate
-the theoretical and empirical quantiles to include the ideal line
-in the graph. From the quantiles, intercept and slope are calculatet. 
+ 
+\input{\string"../quantlets/Regression_Models/reg_table\string".tex}\label{table:regs}
+ 
+\FloatBarrier

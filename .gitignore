@@ -11,3 +11,4 @@
 *.synctex.gz
 *.lof
 *.lot
+.Rproj.user

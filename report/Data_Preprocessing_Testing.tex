@@ -1,0 +1,41 @@
+
+\subsection{Data Preprocessing}
+We apply Amis dataset (train.csv) to the quantlet "data prepocessing".
+after trivial parts of the code, the first function returns the number of missing values.  there are 19 variables with missing values, from which 14 have a meaning according to the data description. 
+\autoref{fig:mis} visualizes the missings for the remaining 5 variables. Especially for LotFrontage there are a lot of missing values, as well as YearGarage built. For the latter it is possible that this means there is no garage, however, unlike for the other variables where missingness has a meaning this is not reportet in the data description. The check for remaining Missings returns a "false", thus the imputation was succesfull. 
+
+\begin{figure}[H]
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_preprocessing/missmap\string".pdf}
+  \caption{Missingness map before imputation}\label{fig:mis}
+\end{figure}
+ 
+\autoref{fig:box} shows some example variables which have the most outliers before and after truncation to the $3 \times IQR$. Visual inspection of the graphs confirms, that the general distribution is not altered, only the extreme values are now truncated. 
+\begin{figure}[H]
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_preprocessing/boxplots\string".pdf}
+  \caption{Illustration of variable selection for lasso based on the regularization term}\label{fig:box}
+\end{figure}
+
+All numeric variables are then displayed in some histograms in \autoref{fig:hist}. Some of these variables only show few different values, however overall the distribution of the (scaled) variables appears to be suitable for further analysis. 
+ 
+\begin{figure}[H]
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_preprocessing/histograms\string".pdf}
+  \caption{Illustration of variable selection for lasso based on the regularization term}\label{fig:step}
+\end{figure}
+
+For the PCA, the screeplot displayed in \autoref{fig:scree} is indecisive, as there are two "elbows".  We therefore use the solution in  between with 4 components, which explain about 70\% of the initial variance.  
+
+\begin{figure}[H]
+  \centering
+\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_preprocessing/screeplot\string".pdf}
+  \caption{Mean squared error versus the tested lambda values. Results from cross validation procedure for lasso.}\label{fig:scree}
+\end{figure}
+
+
+
+ 
+
+
+

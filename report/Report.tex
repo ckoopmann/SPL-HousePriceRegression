@@ -6,7 +6,8 @@
 \usepackage{hyperref}                           % For creating hyperlinks in cross references
 \usepackage[authoryear]{natbib}                 % literature reference style
 \usepackage[bf]{caption2}
-
+\usepackage{float}
+\usepackage{placeins}
 \usepackage{listings}
 \usepackage{lvblisting}
 \usepackage[english]{babel}
@@ -137,12 +138,14 @@
 	\input{Introduction}
 \newpage
 \section{Theory and Design}
+	\input{Data_Preprocessing_Theory}
 	\input{Regression_Models_Theory}
 	\input{Random_Forest_Theory}
 	\input{GBM_Theory}
 \newpage
 \section{Implementation}
 	\input{Exploratory_Analysis_Implementation}
+	\input{Data_Preprocessing_Implementation}
 	\input{Regression_Models_Implementation}
 	\input{Random_Forest_Implementation}
 	\input{GBM_Implementation}
@@ -150,6 +153,8 @@
 \newpage
 \section{Empirical Study}
 	\input{Exploratory_Analysis_Testing}
+	\input{Data_Preprocessing_Testing}
+
 	\subsection{Training / Tuning Results}
 		\input{Regression_Models_Testing}
 		\input{Random_Forest_Testing}
@@ -170,7 +175,7 @@
 % literature
 \newpage
 \addcontentsline{toc}{section}{References}
-\bibliography{literature}
+%\bibliography{literature}
 
 
 

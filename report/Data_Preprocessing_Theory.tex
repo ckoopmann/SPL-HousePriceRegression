@@ -1,0 +1,16 @@
+\subsection{Data Preprocessing}
+
+Different models have different capabilities to deal with certain characteristics of the data, especially missing values, outliers and dimensionality.  The aim of the quantlet "Data Preprocessing" ist to ensure, that all models that are later used are capable of handling the same training dataset, thus ensuring the comparability of results. 
+To begin with, i.e. regression models are not capable of handling missing data which results in a rowwise deletion of cases and threfore a lower number of observations. A possible approach to avoid this is  imputation, for instance with a simple but robust median and mode imputation. For this, the median and mode of the non-missing variables is calculated, and then assigned to the missing values of that variable. 
+
+Especially in regression models outliers in the data can have a large impact on the regression coefficients (high leverage), and therefore impede the out of sample capabilites of the  models. While a large value might not be necessarly an error, especially in the Machine Learning context such leverage can be an issue. A possibility to detect and truncate outliers is based on the inter quantile range ($IQR = 3rd Quantile -1st Quantile$).
+Often an extreme outlier is defined as a value, that is larger than $3 \times IQR$. We decide to only truncated values that are larger than this treshold. 
+
+Given the possibility of correlated regressors and the large number of predictors, principal component analysis can be used to reduce the number of numeric regressors. This is especially appealing since we are not interested in substantial interpretation of variables, which means that it is no shortcoming that the components in the regression might be difficult to interpret. 
+The aim of Principial Component analysis in this context is to transform a number of correlated variables to a lower number of uncorrelated components, while explaining as much of the initial variance as possible. 
+Let X be the the data matrix, then the full decomposition is given by 
+  $  T = XW $
+where W is the matrix that contains the eigenvectors of $X'X$.  
+In the R-packages used in this analysis, the eigenvectors are retained using spectral decomposition of the correlation matrix of selected variables.
+Instead of keeping all uncorrelated factors, we rely on a subset of factors $T^* \subset T$, such that the number of components is smaller than the number of variables. 
+For the categoric variables dimensionality is a result of the number of factor levels. If a factor level only contains a very small number of observations, it might perfectly predict the outcome (see also Section XX). Also, because the dataset is later split in different training and tests set, an issue might be that a small factor level does not excist in the training data, but in the test data. To avoid this, small factor levels can be merged to a sufficiently large factor category "other". 
