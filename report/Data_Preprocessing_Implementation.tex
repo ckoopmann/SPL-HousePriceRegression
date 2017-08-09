@@ -1,34 +1,35 @@
-\section{Data Preprocessing}
+\subsection{Data Preprocessing}
 
 To  get an overview on the  the missing data a function is written that returns variable names and the missingness count for a given dataframe. 
-For those factorvariables were missing has a meaning, the function na2none changes the respective factor level to "none". 
+For those factor variables were missing has a meaning, the function na2none changes the respective factor level to "none". 
 The function is than applied in a small loop to each variable of an earlier defined list. 
-To illustrate the remaining missings, a  missingnessplot  is created based on the package ggplot2. For this, all variables with missing values are reshaped to a new dataframe that has three colums, such that for every combination of observation and variable the information is provided if there is a missing value or not. 
+To illustrate the remaining missings, a  missingnessplot  is created based on the package ggplot2. For this, all variables with missing values are reshaped to a new dataframe that has three columns, such that for every combination of observation and variable the information is provided if there is a missing value or not. This is done conveniently with the reshape2 and dplyr package.  
 
 \begin{lstlisting}[language=R]
 miss.plot = function(x) {
-      x %>% is.na %>% melt %>% ggplot(data = ., aes(x = Var2, y = Var1)) + geom_raster(aes(fill = value)) + 
-            scale_fill_discrete(name = "", labels = c("Present", "Missing")) + theme_minimal() + 
+      x %>% is.na %>% melt 
+      %>% ggplot(data = ., aes(x = Var2, y = Var1)) + geom_raster(aes(fill = value)) + 
+            scale_fill_discrete(name = "", labels = c("Present", "Missing")) + theme_classic() + 
             theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) + labs(x = "Variables in Dataset", 
-                                                                              y = "Rows / observations")
+            y = "Rows / observations")
 }
 \end{lstlisting}
 
 The miss.plot function is then called  for  a dataframe with the subset of missing  variables. 
 
-For imputation purposes the dataframe is split into numeric and categoric variables. 
-Simple functions than calculate mode and median on the avaible data and replace the respective missing values
-For the mode, a small custom calcuation function is needed in addition, because the base function in R does not work for non-numeric variables. 
+For imputation purposes the dataframe is split into numeric and categorical variables. 
+Simple functions than calculate mode and median on the avaiable data and replace the respective missing values
+For the mode, a small custom calculation function is needed in addition, because the base function in R does not work for non-numeric variables. 
 \begin{lstlisting}[language=R]
 Mode = function(x) {
       ux = unique(x)
       ux[which.max(tabulate(match(x, ux)))]
 }
 \end{lstlisting}
-Using sapply the median and mode functions are then applied on the respective subset of numeric and categoric variables. 
+Using sapply the median and mode functions are then applied on the respective subset of numeric and categorical variables. 
 
-To reduce dimensionality and avoid empty categories in the later performed split into test and training data small factorlevels are then merged. The function single.factors firstly calculates for every factor in a supplied dataframe the number of observations in each factor level. If there are equal or less than 20 observations in a level, the obserations are reassigned to a category named "other". 
-Because it is still possible that a variable now has for example 1415 observations in one level, and only five observations in the level "other", the function then checks if there are only 2 factor levels and if one of these levels has less than 20 observations. In this case, the value for all observations on that variable are set to NA and the variable is then removed (line XX)
+To reduce dimensionality and avoid empty categories in the later performed split into test and training data small factorlevels are then merged. The function single.factors firstly calculates for every factor in a supplied dataframe the number of observations in each factor level. If there are equal or less than 20 observations in a level, the observations are reassigned to a category named "other". 
+Because it is still possible that a variable now has for example 1415 observations in one level, and only five observations in the level "other", the function then checks if there are only 2 factor levels and if one of these levels has less than 20 observations. In this case, the value for all observations on that variable are set to NA and the variable is then removed.
 
 \begin{lstlisting}[language=R]
 single.factors = function(data) {
@@ -50,22 +51,20 @@ single.factors = function(data) {
 }
 \end{lstlisting}
 
- 
 
 To get an overview of the number of outliers, the function outlier.count  counts the numbers of outliers per variable.
-It is now necessary to remove variables that only have "outliers", this is the case where the IQR is zero. This situation occurs for instance, if a variable has zero for all but very few observations (e.g. number of bathrooms on the fifth floor). 
+It is now necessary to remove variables that only consist of "outliers", which is the case when the IQR is zero. This situation occurs for instance, if a variable has zero for all but very few observations (e.g. number of bathrooms on the fifth floor). 
 
-Because there are some numerivc variables with less than 10 distinct values ( as returned by the function unique.values), these variables are looked at again in case there is an error in the data. 
-The function outlier.truncate is then very similar to outlier count, but also truncates the outliers toi the IQR treshold as defined in part XX. 
+Because there are some numeric variables with less than 10 distinct values ( as returned by the function unique.values), these variables are looked at again in case there is an error in the data. 
+The function outlier.truncate is then very similar to outlier count, but also truncates the outliers to the IQR treshold as defined in part\nameref{sec:data_theory}. 
 
-For visualization purposes some boxpolots are then created, that show the difference in variables with more than 5 outliers before and after truncation. 
+For visualization purposes some boxplots are then created, that show the difference in variables with more than 5 outliers before and after truncation. 
 
 Finally, histograms of all processed numeric variables are plotted. 
 
 
 To select appropriate variables for the PCA only numeric variables that have an absolute correlation of more than 0.7 with at least one other variable are selected.  Using the package Princomp, a PCA based on the correlation matrix of that subset is performed. 
-A screeplot is then plottet to allow to check for the elbow criterion. 
-However, finaly the selection is based on the variables that explain together more than 70 percent of the variances. 
+A screeplot is then plotted to allow to check for the elbow criterion. 
+However, finally the selection is based on those variables that explain together more than 70 \% of the initial variance. 
 
-
-The different preprocessed dataframes (numeric variabes, PCA-results and categoric variables are then merged to a new dataframe, standardized where applicable. Using mode.matrix the factor levels are split into dummy variables. The final dataset is then split into test and training data and exportet for further analysis. 
+The different preprocessed dataframes (numeric variables, PCA-results and categorical variables) are then merged to a new dataframe and standardized where applicable. Using mode.matrix the factor levels are converted to dummy variables. The final dataset is then split into test and training data and exported to .csv for further analysis. 
