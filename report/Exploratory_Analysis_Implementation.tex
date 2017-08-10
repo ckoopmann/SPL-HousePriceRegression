@@ -1,7 +1,7 @@
 \subsection{Exploratory Data Analysis}
 TODO (Felix / Christian)
 \subsubsection{Exploratory Data Analysis Dependence}
-After investigating data, each variables on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea how to use the available data in the models one is aiming for. For this project we implemented three functions. One creates a correlation plot, showing how correlated the numeric variables are each with every other variable. Another examines the relationship between the target variable SalePrice and lastly a function that creates boxplots of SalePrice depending on the levels of the categoric variables. \\
+After investigating data, each variables on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea how to use the available data in the models one is aiming for. For this project we implemented three functions. One creates a correlation plot, showing how correlated the numeric variables are each with every other variable. Another examines the relationship between the target variable SalePrice and lastly a function that creates boxplots of SalePrice depending on the levels of the categoric variables. Because of the different uses of variable scales the dataset is split into numeric and categoric data as input for the functions. \\
 The first function is called corr.func and produces a correlation  plot giving the user some options on what the function output should contain.
 \begin{lstlisting}[language=R]
 corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, significance = 0.05) {
@@ -19,7 +19,6 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
         n                    = ncol(corr.data)
         p.value.matrix       = matrix(NA, n, n)
         diag(p.value.matrix) = 0
-        
         for (i in 1:(n - 1)) {
             for (j in (i + 1):n) {
                 tmp = cor.test(corr.data[, i], corr.data[, j])            # testing correlation
@@ -44,3 +43,32 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
         return(corr.numeric.adjusted)
 }
 \end{lstlisting}
+The inputs of the functions are a dataset, a cut.value one has to choose, corr.mat and corr.test ,which both default to FALSE and significance, which defaults to 0.05. The function first produces a correlation matrix of the input data without missing values and uses this matrix of all numeric variables to find the ones which do not correlate with any other variable above the cutoff value set by the user using the apply function. These variables are excluded from the final graph and are spelled out to the user. Inside corr.func there is another function called correlation.test. This function uses the cutoff adjusted correlation matrix to produce p-values of a correlation test at the significance level chosen in the input of the main function. If the input corr.test is used with its default value FALSE then a plain correlation plot is saved using the package corrplot. Otherwise the p-value matrix from correlation.test is shown in the plot via crosses indicating non-significance. Lastly if one chooses to set corr.mat to TRUE, the raw correlation matrix is displayed. \\
+The second function corr.barplot focuses on the relationship between the target variable and all the other numeric variables in the dataset. 
+\begin{lstlisting}[language=R]
+corr.barplot = function(numb.corr) {
+    if (numb.corr > ncol(numeric.data) - 1) {
+        return("Warning: You can choose at most all numeric variables in the dataset except the target variable SalePrice, which is already implemented as default value")
+    } else {
+        correlation.vars    = names(numeric.data) %in% c("SalePrice")
+        correlation.data    = numeric.data[!correlation.vars]                  # subsetting the numeric variables to not contain the target variable
+        correlations        = vector(length = length(names(correlation.data))) # setting up vector for results (correlations)
+        names(correlations) = names(correlation.data)
+        for (i in names(correlation.data)) {                                   # calculating all bivariate correlations
+            correlations[i] = cor(numeric.data$SalePrice, correlation.data[i], use = "pairwise.complete.obs")
+        }
+        # setting up the results for plotting
+        y.plotting = correlations[order(abs(correlations), decreasing = TRUE)][1:numb.corr]
+        x.plotting = names(y.plotting)
+        names(y.plotting) = NULL
+        df = data.frame(x.plotting, y.plotting)
+        df$x.plotting = factor(df$x.plotting, levels = df[order(abs(df$y.plotting), decreasing = TRUE), "x.plotting"])
+        
+        ggplot(data = df, aes(x.plotting, y.plotting), fill = as.factor(x.plotting)) + geom_bar(stat = "identity") + 
+            theme(axis.title.x = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12)) + 
+            ylab("Correlation") + ggtitle(paste("Barplot of the", numb.corr, "highest bivariate correlations with SalePrice", 
+            sep = " "))
+    }
+}
+\end{lstlisting}
+The function corr.barplot only has one input parameter numb.corr, where one has to choose the number of correlations to plot. If a number greater than the number of numeric variables other than the target variable is chosen a warning  is returned. Otherwise the numeric data is split into the dependent variable and the rest. Afterwards all the correlations between SalePrice and the other variables are calculated and stored. For plotting only the variables with the highest absolute correlations up to the specified numb.corr are used. We used the package ggplot2 to create a barplot of the ordered (in absolute value) correlations (in real value). 
