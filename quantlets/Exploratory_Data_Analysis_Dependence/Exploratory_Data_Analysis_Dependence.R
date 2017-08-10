@@ -84,7 +84,7 @@ corr.func(numeric.data, cut.value = 0.3, corr.mat = FALSE, corr.test = TRUE)
 
 
 # Part 2:
-# Ordered barplot of the univariate correlations between the target variable SalePrice and numeric variables in
+# Ordered barplot of the bivariate correlations between the target variable SalePrice and numeric variables in
 # the dataset
 
 corr.barplot = function(numb.corr) {
@@ -115,7 +115,7 @@ corr.barplot = function(numb.corr) {
 }
 
 # plotting the barplot in RStudio
-corr.barplot()
+corr.barplot(36)
 
 # saving the plot as PDF
 path.barplot = file.path(getwd(), "Barplot_ordered.pdf")
