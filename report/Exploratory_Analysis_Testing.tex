@@ -1,5 +1,6 @@
 \subsection{Exploratory Data Analysis}
 In this section we will present the results of the exploratory data analysis on the housing data. First we will present the results with regards to the distribution of the target variable and afterwards we will analyse the input variables as well as the dependence / correlation structure between them and the target variable. 
+\subsubsection{Exploratory Data Analysis Univariate}
 In Figure \ref{fig:pricehist} we have visualised the distribution of the target variable \textit{SalePrice} in the dataset. As we can see from the histogram bars as well as the empirical density plotted in red, the distribution is highly skewed with a long tail to the right. If we compare this with a normal distribution with the same mean and variance, whose density is plotted in blue, we can see significant differences and confidently assume that the target variable does not follow a normal distribution. 
 In Figure \ref{fig:logpricehist} we have repeated this analysis after applying a log-transformation to the sale prices. In this case a very different picture emerges with the empirical density closely resembling that of a normal distribution. This picture is supported by the QQ-Plot shown in Figure \ref{fig:stdpriceqq}. Here we have also standardised the log sale prices by subtracting the mean and dividing by its standard deviation. The resulting quantiles lie very close to the line that would result from a standard normal distribution, which supports the hypothesis that the log sale prices are indeed normally distributed. This is of special interest since we will use this transformation in our modelling approaches, mainly to convert additive into multiplicative models. 
 
@@ -28,5 +29,6 @@ In Tables \ref{tab:categoric.overview1} to \ref{tab:numeric.overview2} we show t
 
 \input{\string"../quantlets/Exploratory_Data_Analysis/numeric_overview\string".tex}
 
+\subsubsection{Exploratory Data Analysis Dependence}
 Regarding the analysis of the dependence structures we have the following results....
 (TODO Felix)
