@@ -13,4 +13,41 @@ model.mse = function(model, test.data = test) {
     return(mse)
 }
 \end{lstlisting}
-Within the function predictions for the \textit{logSalePrice} in the test dataset have to be made first. The models we use differ in prediction functions available. For the lasso and ridge models one has to use the prediction function from the glmnet package for example and for a standard linear regression uses the standard predict  function from the base R distribution. Using an if-else statement based on the model class one can decide between the variants. After predicting the target variable the mse is computed using the real data and the model predictions. The other functions we implement (mse on training data, mean absolute error, bias and $R^2$) differ only in the last step, the computation of the measure itself. All of them use predictions made on the test data based on their respective model class.  
+Within the function predictions for the \textit{logSalePrice} in the test dataset have to be made first. The models we use differ in prediction functions available. For the lasso and ridge models one has to use the prediction function from the glmnet package for example and for a standard linear regression uses the standard predict  function from the base R distribution. Using an if-else statement based on the model class one can decide between the variants. After predicting the target variable the mse is computed and returned using the real data and the model predictions. The other functions we implement (mse on training data, mean absolute error, bias and $R^2$) differ only in the last step, the computation of the measure itself. All of them use predictions made on the test data based on their respective model class. \\
+After the introduction of the evaluation functions we use them to create a table summarizing all the results.
+\begin{lstlisting}[language=R]
+model.list                  = list(lm.fit, fwd.fit, lasso.fit, ridge.fit, gbmtuned, rftuned)
+comparisonMSE.list          = sapply(model.list, FUN = model.mse)
+comparisonMSEtrain.list     = sapply(model.list, FUN = model_overfit.mse)
+comparisonMAE.list          = sapply(model.list, FUN = model.mae)
+comparisonBIAS.list         = sapply(model.list, FUN = model.bias)
+comparisonRSQ.list          = sapply(model.list, FUN = model.Rsq)
+comparison.result           = matrix(c(round(comparisonMSE.list, 3), round(comparisonMSEtrain.list, 3), round(comparisonMAE.list, 3), 
+    round(comparisonBIAS.list, 3), round(comparisonRSQ.list, 3)), ncol = length(model.list), byrow = TRUE)
+rownames(comparison.result) = c("MSE", "MSEtrain", "MAE", "BIAS", "RSQ")
+colnames(comparison.result) = c("lm", "fwd", "lasso", "ridge", "gbm", "rf")
+\end{lstlisting}
+First a list of all trained models is set up. This list is used via the sapply command to create lists of the respective measures for every model. The lists are combined in a matrix of results, the columns being the models and the rows the different measures of prediction accuracy. Additionally to the numeric representation we also show the results graphically. Using ggplot2 we create predictions vs. real values plots for all models and enhance the graphs by drawing a line, where the points would have to be, if every datapoint in the test set was predicted correctly. Furthermore we run linear regression of the predicted on the real values and add the resulting regression line to the plots. 
+\begin{lstlisting}[language=R]
+predicted.values           = data.frame(cbind(predictions.lm,predictions.fwd,predictions.lasso,predictions.ridge,predictions.rf,predictions.gbm))
+colnames(predicted.values) = c("predictions.lm","predictions.fwd","predictions.lasso","predictions.ridge","predictions.rf","predictions.gbm")
+coeff.lm                   = vector("list", ncol(predicted.values)) # preparing an empty list for coefficients of regression
+
+# Looping through all the predictions of the different models
+for (i in 1:ncol(predicted.values)){
+  data.temp = data.frame(cbind(predicted.values[,i],test$logSalePrice))
+  lm.temp = lm(data.temp[,1]~data.temp[,2])
+  coeff.lm[[i]] = coef(lm.temp)
+}
+\end{lstlisting}
+This code implements the linear regression needed for the additional line in the scatterplots. All predicted values are combined into a dataframe and an empty list for the regression coefficients is created. We run through the predictions list with a for-loop, creating first temporary dataframes with the predictions and the real values and then running the linear regression. The coefficients of these temporary regressions (intercept and slope) are saved in the list coeff.lm created before. As before with the mse we only show the code for one plot, since  the codes for the other models are basically identical except the predicted values used.
+\begin{lstlisting}[language=R]
+df.lm.fit      = data.frame(cbind(test$logSalePrice, predictions.lm ))  # creating dataframe containing real and predicted outcome
+
+lm.plot = ggplot(df.lm.fit, aes(V1, predictions.lm)) + geom_point() + geom_segment(x = -4, 
+    y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
+    x = "logSalePrice", y = "lm.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
+    face = "bold")) + annotate("text", label = paste("int:", round(coeff.lm[[1]][1],4), sep = " "), x = -3, y = 3) + annotate("text", 
+    label = paste("slope:", round(coeff.lm[[1]][2],4), sep = " "), x = -3, y = 2.5) + theme_classic()
+\end{lstlisting} 
+In this code snippet we create a dataframe df.lm.fit of real values and predictions by our linear model. The object lm.plot is a scatterplot of the variables in the dataframe df.lm.fit. Additionally with the command geomsegment a red line is drawn through the point cloud indicating perfect prediction accuracy. We use statsmooth to also include the fittted line of an ordinary least squares regression. Making use of the regressions run outside the plot we include the intercept and slope coefficients via the annotate command.   
