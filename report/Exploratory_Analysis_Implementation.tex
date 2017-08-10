@@ -86,5 +86,47 @@ writeLines(all.latex, con = "numeric_overview.tex")
 \end{lstlisting} 
 
 
-In the second part of the exploratory data analysis ....
-(TODO FELIX)
+\subsubsection{Exploratory Data Analysis Dependence}
+After investigating data, each variables on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea how to use the available data in the models one is aiming for. For this project we implemented three functions. One creates a correlation plot, showing how correlated the numeric variables are each with every other variable. Another examines the relationship between the target variable SalePrice and lastly a function that creates boxplots of SalePrice depending on the levels of the categoric variables. \\
+The first function is called corr.func and produces a correlation  plot giving the user some options on what the function output should contain.
+\begin{lstlisting}[language=R]
+corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, significance = 0.05) {
+    corr.numeric = cor(na.omit(numeric.data))               # produces correlation matrix of all numeric variables in the dataset
+    # find columns of data, which have correlations higher then cut.value
+    find.rows = apply(corr.numeric, 1, function(x) sum(abs(x) > abs(cut.value)) > 1)
+    # subset correlation matrix for plotting
+    corr.numeric.adjusted = corr.numeric[find.rows, find.rows]
+    # find data, which has low correlation
+    low.corr = colnames(corr.numeric) %in% colnames(corr.numeric.adjusted)
+    cat("The variables", "\n", paste0(colnames(corr.numeric)[!low.corr], collapse = ", "), "\n", "have very low bivariate correlations with the other numeric variables in the training data set!")
+    # test correlations at certain significance level using a function, that produces a p-value matrix for all bivariate correlations
+    correlation.test = function(corr.data) {
+        corr.data            = as.matrix(corr.data)
+        n                    = ncol(corr.data)
+        p.value.matrix       = matrix(NA, n, n)
+        diag(p.value.matrix) = 0
+        
+        for (i in 1:(n - 1)) {
+            for (j in (i + 1):n) {
+                tmp = cor.test(corr.data[, i], corr.data[, j])            # testing correlation
+                p.value.matrix[i, j] = p.value.matrix[j, i] = tmp$p.value # filling p-value matrix with respective p-values
+            }
+            colnames(p.value.matrix) = rownames(p.value.matrix) = colnames(corr.numeric.adjusted)
+        }
+        return(p.value.matrix)
+    }
+    # save resulting correlation matrix
+    pdf("Corrplot.pdf")
+    if (corr.test == FALSE) {
+        corrplot(corr.numeric.adjusted, method = "square")
+    } else {
+        corrplot(corr.numeric.adjusted, p.mat = correlation.test(corr.numeric.adjusted), sig.level = significance, 
+            method = "square")
+    }
+    dev.off()
+    
+    # print raw correlation matrix if desired
+    if (corr.mat == TRUE) 
+        return(corr.numeric.adjusted)
+}
+\end{lstlisting}
