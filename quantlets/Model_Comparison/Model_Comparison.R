@@ -110,72 +110,86 @@ print(modelcomparison_latex, file = "modelcomparison.tex")
 #################################################################################
 # Plotting the estimations against the real values in the test dataset
 
+# Making predictions for every model on the test data
+predictions.lm    = predict(lm.fit, newdata = test)                        
+predictions.fwd   = predict(fwd.fit, newdata = test)
+predictions.lasso = predict(lasso.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
+predictions.ridge = predict(ridge.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
+predictions.gbm   = predict(gbmtuned, newdata = test)
+predictions.rf    = predict(rftuned, newdata = test)
+
+# Running an OLS regression of predicted on real values for the plots
+predicted.values           = data.frame(cbind(predictions.lm,predictions.fwd,predictions.lasso,predictions.ridge,predictions.rf,predictions.gbm))
+colnames(predicted.values) = c("predictions.lm","predictions.fwd","predictions.lasso","predictions.ridge","predictions.rf","predictions.gbm")
+coeff.lm                   = vector("list", ncol(predicted.values)) # preparing an empty list for coefficients of regression
+
+# Looping through all the predictions of the different models
+for (i in 1:ncol(predicted.values)){
+  data.temp = data.frame(cbind(predicted.values[,i],test$logSalePrice))
+  lm.temp = lm(data.temp[,1]~data.temp[,2])
+  coeff.lm[[i]] = coef(lm.temp)
+}
+
 
 # plot real values against estimated values lm.fit plot
-predictions.lm = predict(lm.fit, newdata = test)                        # predicting the outcome for test data
 df.lm.fit      = data.frame(cbind(test$logSalePrice, predictions.lm ))  # creating dataframe containing real and predicted outcome
 
 lm.plot = ggplot(df.lm.fit, aes(V1, predictions.lm)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "lm.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
-    face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "lm"], sep = " "), x = -3, y = 3) + annotate("text", 
-    label = paste("MAE:", comparison.result["MAE", "lm"], sep = " "), x = -3, y = 2.5) + theme_classic()
-
+    face = "bold")) + annotate("text", label = paste("int:", round(coeff.lm[[1]][1],4), sep = " "), x = -3, y = 3) + annotate("text", 
+    label = paste("slope:", round(coeff.lm[[1]][2],4), sep = " "), x = -3, y = 2.5) + theme_classic()
+lm.plot
 
 # fwd.fit plot
-predictions.fwd = predict(fwd.fit, newdata = test)
 df.fwd.fit      = data.frame(cbind(test$logSalePrice, predictions.fwd))
 
 fwd.plot = ggplot(df.fwd.fit, aes(V1, predictions.fwd)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "fwd.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
-    face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "fwd"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "fwd"], sep = " "), x = -3, y = 2.5) + theme_classic()
-
+    face = "bold")) + annotate("text", label = paste("int:", round(coeff.lm[[2]][1],4), sep = " "), x = -3, y = 3) + 
+    annotate("text", label = paste("slope:", round(coeff.lm[[2]][2],4), sep = " "), x = -3, y = 2.5) + theme_classic()
+fwd.plot
 
 # lasso.fit plot
-predictions.lasso = predict(lasso.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
 df.lasso.fit      = data.frame(cbind(test$logSalePrice, predictions.lasso))
 
 lasso.plot = ggplot(df.lasso.fit, aes(V1, predictions.lasso)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "lasso.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
-    face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "lasso"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "lasso"], sep = " "), x = -3, y = 2.5) + theme_classic()
-
+    face = "bold")) + annotate("text", label = paste("int:", round(coeff.lm[[3]][1],4), sep = " "), x = -3, y = 3) + 
+    annotate("text", label = paste("MAE:", round(coeff.lm[[3]][2],4), sep = " "), x = -3, y = 2.5) + theme_classic()
+lasso.plot
 
 # ridge.fit plot
-predicions.ridge = predict(ridge.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
-df.ridge.fit     = data.frame(cbind(test$logSalePrice, predicions.ridge))
+df.ridge.fit     = data.frame(cbind(test$logSalePrice, predictions.ridge))
 
-ridge.plot = ggplot(df.ridge.fit, aes(V1, predicions.ridge)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
+ridge.plot = ggplot(df.ridge.fit, aes(V1, predictions.ridge)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "ridge.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
-    face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "ridge"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "ridge"], sep = " "), x = -3, y = 2.5) + theme_classic()
-
+    face = "bold")) + annotate("text", label = paste("int:", round(coeff.lm[[4]][1],4), sep = " "), x = -3, y = 3) + 
+    annotate("text", label = paste("slope:", round(coeff.lm[[4]][2],4), sep = " "), x = -3, y = 2.5) + theme_classic()
+ridge.plot
 
 # gbm plot
-predictions.gbm = predict(gbmtuned, newdata = test)
 df.gbm          = data.frame(cbind(test$logSalePrice, predictions.gbm))
 
 gbm.plot = ggplot(df.gbm, aes(V1, predictions.gbm)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "gbmtuned predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
-    face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "gbm"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "gbm"], sep = " "), x = -3, y = 2.5) + theme_classic()
-
+    face = "bold")) + annotate("text", label = paste("int:", round(coeff.lm[[5]][1],4), sep = " "), x = -3, y = 3) + 
+    annotate("text", label = paste("slope:", round(coeff.lm[[5]][2],4), sep = " "), x = -3, y = 2.5) + theme_classic()
+gbm.plot
 
 # rf plot
-predictions.rf = predict(rftuned, newdata = test)
 df.rf          = data.frame(cbind(test$logSalePrice, predictions.rf))
 
 rf.plot = ggplot(df.rf, aes(V1, predictions.rf)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "rftuned predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
-    face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "rf"], sep = " "), x = -3, y = 3) + annotate("text", 
-    label = paste("MAE:", comparison.result["MAE", "rf"], sep = " "), x = -3, y = 2.5) + theme_classic()
-
+    face = "bold")) + annotate("text", label = paste("int:", round(coeff.lm[[6]][1],4), sep = " "), x = -3, y = 3) + annotate("text", 
+    label = paste("slope:", round(coeff.lm[[6]][2],4), sep = " "), x = -3, y = 2.5) + theme_classic()
+rf.plot
 
 # plotting resulting graphs together
 
