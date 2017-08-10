@@ -1,2 +1,16 @@
 \subsection{Evaluation}
-TODO (Felix / Christian)
+In this section we explain, how we implemented ways to evaluate our results i.e. compare the models we created. As explained in the theory part about model evaluation, there are many measures that can be looked at in order to decide which models perform better than others. Since we take a variety of these measures into account we will present examplary code for one of them. All the functions are created the same way and it is therefore sufficient to explain the code for the mean squared error (mse) function as a blueprint for the others. \\
+For the quantlet ModelComparison all the trained models, training data called train and test data called test are needed. The function model.mse takes two input parameters. The first is the model the mse is supposed to be computed for and the second the test data on which the mse is executed (defaults to test). 
+\begin{lstlisting}[language=R]
+model.mse = function(model, test.data = test) {
+    if (class(model)[1] %in% c("train", "lm")) {
+        pred = predict(model, newdata = test.data)
+        mse  = (1/ncol(test.data)) * sum((pred - test.data$logSalePrice)^2)
+    } else {
+        pred = predict(model, newx = as.matrix(test.data[!names(test.data) %in% "logSalePrice"]), s = "lambda.1se")
+        mse  = (1/ncol(test.data)) * sum((pred - test.data$logSalePrice)^2)
+    }
+    return(mse)
+}
+\end{lstlisting}
+Within the function predictions for the \textit{logSalePrice} in the test dataset have to be made first. The models we use differ in prediction functions available. For the lasso and ridge models one has to use the prediction function from the glmnet package for example and for a standard linear regression uses the standard predict  function from the base R distribution. Using an if-else statement based on the model class one can decide between the variants. After predicting the target variable the mse is computed using the real data and the model predictions. The other functions we implement (mse on training data, mean absolute error, bias and $R^2$) differ only in the last step, the computation of the measure itself. All of them use predictions made on the test data based on their respective model class.  
