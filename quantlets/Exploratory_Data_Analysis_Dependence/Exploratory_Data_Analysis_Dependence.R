@@ -87,7 +87,7 @@ corr.func(numeric.data, cut.value = 0.3, corr.mat = FALSE, corr.test = TRUE)
 # Ordered barplot of the univariate correlations between the target variable SalePrice and numeric variables in
 # the dataset
 
-corr.barplot = function(numb.corr = 36) {
+corr.barplot = function(numb.corr) {
     if (numb.corr > ncol(numeric.data) - 1) {
         return("Warning: You can choose at most all numeric variables in the dataset except the target variable SalePrice, which is already implemented as default value")
     } else {
