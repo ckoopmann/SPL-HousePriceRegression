@@ -119,7 +119,7 @@ lm.plot = ggplot(df.lm.fit, aes(V1, predictions.lm)) + geom_point() + geom_segme
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "lm.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "lm"], sep = " "), x = -3, y = 3) + annotate("text", 
-    label = paste("MAE:", comparison.result["MAE", "lm"], sep = " "), x = -3, y = 2.5)
+    label = paste("MAE:", comparison.result["MAE", "lm"], sep = " "), x = -3, y = 2.5) + theme_classic()
 
 
 # fwd.fit plot
@@ -130,7 +130,7 @@ fwd.plot = ggplot(df.fwd.fit, aes(V1, predictions.fwd)) + geom_point() + geom_se
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "fwd.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "fwd"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "fwd"], sep = " "), x = -3, y = 2.5)
+    annotate("text", label = paste("MAE:", comparison.result["MAE", "fwd"], sep = " "), x = -3, y = 2.5) + theme_classic()
 
 
 # lasso.fit plot
@@ -141,7 +141,7 @@ lasso.plot = ggplot(df.lasso.fit, aes(V1, predictions.lasso)) + geom_point() + g
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "lasso.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "lasso"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "lasso"], sep = " "), x = -3, y = 2.5)
+    annotate("text", label = paste("MAE:", comparison.result["MAE", "lasso"], sep = " "), x = -3, y = 2.5) + theme_classic()
 
 
 # ridge.fit plot
@@ -152,7 +152,7 @@ ridge.plot = ggplot(df.ridge.fit, aes(V1, predicions.ridge)) + geom_point() + ge
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "ridge.fit predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "ridge"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "ridge"], sep = " "), x = -3, y = 2.5)
+    annotate("text", label = paste("MAE:", comparison.result["MAE", "ridge"], sep = " "), x = -3, y = 2.5) + theme_classic()
 
 
 # gbm plot
@@ -163,7 +163,7 @@ gbm.plot = ggplot(df.gbm, aes(V1, predictions.gbm)) + geom_point() + geom_segmen
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "gbmtuned predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "gbm"], sep = " "), x = -3, y = 3) + 
-    annotate("text", label = paste("MAE:", comparison.result["MAE", "gbm"], sep = " "), x = -3, y = 2.5)
+    annotate("text", label = paste("MAE:", comparison.result["MAE", "gbm"], sep = " "), x = -3, y = 2.5) + theme_classic()
 
 
 # rf plot
@@ -174,7 +174,7 @@ rf.plot = ggplot(df.rf, aes(V1, predictions.rf)) + geom_point() + geom_segment(x
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Plot of real logSalePrice against predicted values", 
     x = "logSalePrice", y = "rftuned predictions") + theme(axis.title = element_text(size = 16), plot.title = element_text(size = 16, 
     face = "bold")) + annotate("text", label = paste("MSE:", comparison.result["MSE", "rf"], sep = " "), x = -3, y = 3) + annotate("text", 
-    label = paste("MAE:", comparison.result["MAE", "rf"], sep = " "), x = -3, y = 2.5)
+    label = paste("MAE:", comparison.result["MAE", "rf"], sep = " "), x = -3, y = 2.5) + theme_classic()
 
 
 # plotting resulting graphs together
