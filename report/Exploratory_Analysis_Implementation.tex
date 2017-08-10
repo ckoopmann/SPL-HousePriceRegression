@@ -1,6 +1,7 @@
 \subsection{Exploratory Data Analysis}
 The Exploratory Data Analysis in this project was separated into two parts: The first part (implemented in the quantlet \textit{Exploratory\_Data\_Analysis.R}) concentrates on the univariate analysis of the target variable as well as some general overview of the categoric and numeric variables in the dataset, while the second part (\textit{Exploratory\_Data\_Analysis\_Dependence.R}) analyses the dependence and correlation structure between the explanatory variables and the target variable. 
 
+\subsubsection{Exploratory Data Analysis Univariate}
 The first part begins with an analysis of the distribution of the target variable \textit{SalePrice} both in its original form as well as its distribution after taking the logarithm. In both cases we create a histogram using the corresponding function from the \textit{ggplot2} package. Than we add to the plot both the empirical density function as well as the density of a normal function with mean and variance set to the empirical estimates. This is done calling  \textit{stat\_function} with the \textit{fun} parameter set to the normal density \textit{dnorm} function.
 \begin{lstlisting}[language=R]
 price.hist = ggplot(data, aes(x = SalePrice)) + geom_histogram(aes(y = ..density..), bins = 20, 
