@@ -10,30 +10,30 @@ data = read.csv("train.csv")
 
 
 # Analysis of Target Variable
-
 # Histogram of Target Variable
 price.hist = ggplot(data, aes(x = SalePrice)) + geom_histogram(aes(y = ..density..), bins = 20, 
     colour = "black", fill = "white") + geom_density(alpha = 0.2, fill = "#FF6666") + ggtitle("Distribution of Sale Price vs. Normal Distribution") + 
     xlab("Sale Price") + stat_function(fun = dnorm, args = list(mean = mean(data$SalePrice, 
-    na.rm = TRUE), sd = sd(data$SalePrice, na.rm = TRUE)), col = "blue", size = 2)
+    na.rm = TRUE), sd = sd(data$SalePrice, na.rm = TRUE)), col = "blue", size = 2) + theme_classic()
 ggsave(filename = "PriceHist.pdf")
 # Histogram and QQ Plot of Log Prices
 logprice.hist = ggplot(data, aes(x = log(SalePrice))) + geom_histogram(aes(y = ..density..), 
     bins = 20, colour = "black", fill = "white") + geom_density(alpha = 0.2, fill = "#FF6666") + 
     ggtitle("Distribution of  Log Sale Price vs. Normal Distribution") + xlab("Log Sale Price") + 
     stat_function(fun = dnorm, args = list(mean = mean(log(data$SalePrice), na.rm = TRUE), sd = sd(log(data$SalePrice), 
-        na.rm = TRUE)), col = "blue", size = 2)
+        na.rm = TRUE)), col = "blue", size = 2)  + theme_classic()
 ggsave(filename = "LogPriceHist.pdf")
+
 # Standardised Log Prices
 stdprice.hist = ggplot(data, aes(x = (log(SalePrice) - mean(log(SalePrice), na.rm = TRUE))/sd(log(SalePrice), 
     na.rm = TRUE))) + geom_histogram(aes(y = ..density..), bins = 20, colour = "black", fill = "white") + 
     geom_density(alpha = 0.2, fill = "#FF6666") + ggtitle("Distribution of Standardised Log Sale Price vs. Normal Distribution") + 
-    xlab("Standardised Log Sale Price") + stat_function(fun = dnorm, col = "blue", size = 2)
+    xlab("Standardised Log Sale Price") + stat_function(fun = dnorm, col = "blue", size = 2) + theme_classic()
 ggsave(filename = "StdPriceHist.pdf")
 
 stdprice.qq = ggplot(data, aes(sample = (log(SalePrice) - mean(log(SalePrice), na.rm = TRUE))/sd(log(SalePrice), 
     na.rm = TRUE))) + stat_qq() + geom_abline(slope = 1, intercept = 0, col = "red") + ggtitle("QQ-Plot of Standardised Log Sale Price") + 
-    xlab("Standardised Log Sale Price")
+    xlab("Standardised Log Sale Price")  + theme_classic()
 ggsave(filename = "StdPriceQQ.pdf")
 
 # Get Column Classes:
@@ -73,10 +73,36 @@ categoric.overview = data.frame(NACount = colSums(sapply(categoric.data, is.na))
 categoric.overview_latex = xtable(categoric.overview)
 print(categoric.overview_latex, file = "categoric.overview.tex")
 
+# Export Categorical Overview as Latex Table
+rows.per.table = 30
+row.indices = seq(from = 1, to = nrow(categoric.overview), by = rows.per.table)
+latex.vector = character(0)
+for(i in 1:length(row.indices)){
+    cap = paste0("Overview Categorical Variables Table:",i)
+    lab = paste0("tab:categoric.overview",i)
+    categoric.overview_latex = xtable(categoric.overview[row.indices[i]:min(row.indices[i] + rows.per.table - 1, nrow(categoric.overview)),,drop = FALSE], caption = cap, label =lab)
+    latex.vector = c(latex.vector, print(categoric.overview_latex))
+}
+all.latex = paste(latex.vector, collapse = "\n")
+writeLines(all.latex, con = "categoric_overview.tex")
+
+
 # Create Overview table for numericvariables Create Overview table for categoric variables:
 numeric.overview = data.frame(NACount = colSums(sapply(numeric.data, is.na)), LevelCount = sapply(numeric.data, 
     FUN = getlevelcount), Mode = sapply(numeric.data, FUN = getmode), ModeFrequency = sapply(numeric.data, 
     FUN = getmodefreq), Mean = sapply(numeric.data, FUN = meanwrapper), Median = sapply(numeric.data, 
     FUN = medianwrapper), SD = sapply(numeric.data, FUN = sdwrapper))
-numeric.overview_latex = xtable(numeric.overview)
-print(numeric.overview_latex, file = "numeric.overview.tex")
+
+# Export Categorical Overview as Latex Table
+rows.per.table = 30
+row.indices = seq(from = 1, to = nrow(numeric.overview), by = rows.per.table)
+latex.vector = character(0)
+for(i in 1:length(row.indices)){
+    cap = paste0("Overview Numeric Variables Table:",i)
+    lab = paste0("tab:numeric.overview",i)
+    numeric.overview_latex = xtable(numeric.overview[row.indices[i]:min(row.indices[i] + rows.per.table - 1, nrow(numeric.overview)),,drop = FALSE], caption = cap, label =lab)
+    latex.vector = c(latex.vector, print(numeric.overview_latex))
+}
+all.latex = paste(latex.vector, collapse = "\n")
+writeLines(all.latex, con = "numeric_overview.tex")
+
