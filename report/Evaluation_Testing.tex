@@ -1,4 +1,13 @@
 \subsection{Evaluation}
+After tuning and training all our models it is important to test their performance on "unseen" data, which is not included in the training of the models. For this purpose we hold back our test dataset on which we evaluate our models with different metrics namely the mean squared error (MSE), the mean squared error on the training data (looking for possible overfitting), the mean absolute error (MAE), the bias and the $R^2$. As one can see in \ref{tab:measures} the results differ substantially from model to model sometimes. Looking at the MSE first, we identify the self built backwards selection linear model, the forward selection model and the gbm model as best with regards to this metric. Lasso and Ridge regression have the worst values. This picture is confirmed by the other measures implemented. The linear models without regularization components and the gbm always show the best results, whereas the random forest gives "middle of the road" numbers and Lasso and Ridge regression have the worst results. One exception is the bias, where gbm has the highest figure, but in that case all models come off very similar. One interesting thing, that can be taken away from \ref{tab:measures} as well, is the concern of possible overfitting for the gbm and random forest model. Especially the random forest has a really low MSE value on the training dataset (lower than on the test dataset, which is unique amongst all models). 
+
+\input{\string"../quantlets/Model_Comparison/modelcomparison\string".tex}
+
+
+
+
+
+
 \begin{figure}[H]
 \centering
 	\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Model_Comparison/lm_fit\string".pdf}
@@ -40,3 +49,4 @@
   	\caption{Scatterplot of random forest model predictions and test data}
   	\label{fig:rf}
 \end{figure}
+
