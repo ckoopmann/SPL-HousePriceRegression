@@ -1,17 +1,24 @@
 
 \subsubsection{Regression Models}
-The first model is the self implemented backwards selection. After three iterations, the final selection returns 32 variables which are all significiant at a level of at leas $\alpha=0.05$. 
-The second model is the stepwise forward selection based on the AIC. The $R^{2}$ is about 0.90, which means that about 90\% of variance is explained by this model (in the training data!).
-\autoref{fig:step} visualizes the decrease in the AIC when further variables are included. In the Amis Dataset, the stepwise regression stops at around 80 variables. Clearly the drecrease in AIC is very large in the beginning, and smaller towards the end. 
-The final model shows an even higher explanatory power, as the  $R^{2}$  is about 0.91. 
+The self implemented backwards selection converges after three iterations. The final iteration returns 32 variables which are all significant at a level of at least $\alpha=0.05$. Together these variables have an 
+The $R^{2}$ is about 0.90, which means that about 90\% of variance is explained by this model (in the training data!).
+The forward selection based on the package \textit{step} only shows a slightly higher explanatory power, but selects about twice as much variables.  The stepwise regression converges at 77 variables, with an $R^{2}$ of about 0.91. 
+\autoref{fig:step} visualizes the decrease in the $AIC$ depending on the number of variables that are included. The decrease in $AIC$ is very large in the beginning, and smaller towards the end. 
 
+
+For the Lasso model, \autoref{fig:Lasso} shows the crossvalidation results. Shown here is  $MSE$ versus the logarithm of the different $\lambda$ values that where tried in the CV-procedure. The dashed vertical lines show the $\lambda$ where the $MSE$ is minimal (left line) respectively the first standard deviation of that $\lambda$ value (right line). Thus, the model suggested by the cross validation uses a $\lambda = \exp{-2.85}=0.058$. 
+
+Based on this hyperparameter 33 variables have a coefficient unequal $0$, resulting in a $R^{2}$ of 0.87. 
+The trace plot (\autoref{fig:Lasso1}) visualizes how the regularization in Lasso results in both sparsity and shrinkage. The graph shows how the coefficients change depending on the $L^{1}$-norm, which is the sum of regularized coefficients. If there is no regularization, which is the case when the $L^{1}$ norm is allowed to be large,  the solution is just like the OLS-solution with all variables would be. For a small $L^{1}$-norm there is a lot regularization and the model gets sparser, which is a result of coefficients that are shrinked to zero. The trace plot for instance shows, that the variable  "Comp. 1", which is the first extracted component (see section \nameref{sec:data_theory}) is the most important variable, as it is the variable that is even in the most regularized model.
+
+For Ridge, the hyperparameter is $\lambda = 1.06$, which results in in the same $R^{2}$ -value. As expected (see section \nameref{sec:reg_theory}), Ridge returns the original number of variables. 
+
+\autoref{table:regs} summarizes the results of the different selection mechanisms. Apart from the above described differences in number of variables and  $R^{2}$ squared the table shows, that the regularized models also include variables that are not significant in the stepwise models, which means that at least in the training sample these variables appear to have some predictive power. Overall , the predictive performance is similar, but there are clear differences in the number of variables, and which variables are considered important. 
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/step\string".pdf}
   \caption{AIC versus number of variables in forward stepwise regression}\label{fig:step}
 \end{figure}
-
-The regularization models yield a similar performance. 
  
 \begin{figure}[H]
   \centering
@@ -19,21 +26,11 @@ The regularization models yield a similar performance.
   \caption{Mean squared error versus the tested lambda values. Results from cross validation procedure for Lasso.}\label{fig:Lasso}
 \end{figure}
 
-For the Lasso, \autoref{fig:Lasso} shows the crossvalidation results. Shown here is  MSE versus the logarithm of the different $\lambda$ values that where tried in the CV-procedure. The dashed vertical lines show the $\lambda$ where the MSE is minimal (left line) respectively the first standard deviation of that $\lambda$ value (right line). Thus, the model suggested by the cross validation uses a $\lambda = \exp{-2.85}=0.058$. 
-
-Based on this hyperparameter 33 variables have a coefficient unequal $0$, resulting in a $R^{2}$ of 0.87. 
-
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/Lasso\string".pdf}
   \caption{Illustration of variable selection for Lasso based on the regularization term}\label{fig:Lasso1}
 \end{figure}
- maximum permissible value the L1 norm can take. So when you have a small L1 norm, you have a lot of regularization. Therefore, an L1 norm of zero gives an empty model, and as you increase the L1 norm, variables will "enter" the model as their coefficients take non-zero values. 
-The trace plot (\autoref{fig:Lasso1}) visualizes how the regularization in Lasso results in both sparsity and shrinkage. The graph shows how the coefficients change depending on the L1 norm, which is the sum of regularized coefficients. If there is no regularization, which is the case when the L1 norm is allowed to be large,  the solution is just like the OLS-solution with all variables would be. For a small L1-norm there is a lot regularization and the coefficients shrink and the model gets sparser, which is a result of coefficients that are shrinked to zero. The trace plot for instance shows, that the variable  "Comp. 1", which is the first extracted component (see section \nameref{sec:data_theory}) is the most important variable, as it is the variable that is even in the most regularized model.  
-
-For Ridge, the hyperparameter is $\lambda = 1.06$, which results in in the same $R^{2}$ -value. As expected (see section \nameref{sec:reg_theory}), Ridge returns the original number of variables. 
-
-\autoref{table:regs} summarizes the results of the different selection mechanisms. Apart from the above described differences in number of variables and R² squared the table shows, that the regularized models also include variables that are not significant in the stepwise models, which means that at least in the training sample these variables appear to have some predictive power. 
 
  
 \input{\string"../quantlets/Regression_Models/reg_table\string".tex}\label{table:regs}
