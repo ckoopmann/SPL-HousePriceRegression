@@ -1,8 +1,9 @@
 
 \subsection{Data Preprocessing}
-We apply Ames dataset (train.csv) to the quantlet "Data Preprocessing".
-After trivial parts of the code, the first function returns the number of missing values.  There are 19 variables with missing values, from which 14 have a meaning according to the data description. 
-\autoref{fig:mis} visualizes the missings for the remaining 5 variables. Especially for LotFrontage there are a lot of missing values, as well as YearGarage built. For the latter it is possible that this means there is no garage, however, unlike for the other variables where missingness has a meaning this is not reported in the data description. The check for remaining missings returns a "false", thus the imputation was successfull. 
+We apply the Ames dataset (train.csv) to the quantlet "Data Preprocessing" to handle missings, outliers and dimensionality. 
+There are 19 variables with missing values, from which 14 have a meaning according to the data description. 
+\autoref{fig:mis} visualizes the missings for the remaining 5 variables. Especially for LotFrontage there are a lot of missing values, as well as YearGarage built. For the latter it is possible that this means there is no garage, however, unlike for the other variables where missingness has a meaning this would not be reported in the data description. Because we find it would be arbitrary to treat these missings differently then others, they are imputed like the others
+The check for remaining missings returns a "false", thus the imputation was successfull. 
 
 \begin{figure}[H]
   \centering
@@ -14,23 +15,23 @@ After trivial parts of the code, the first function returns the number of missin
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_preprocessing/boxplots\string".pdf}
-  \caption{Illustration of variable selection for lasso based on the regularization term}\label{fig:box}
+  \caption{Boxplots of variables with many outliers before and after truncation}\label{fig:box}
 \end{figure}
 
-All numeric variables are then displayed in some histograms in \autoref{fig:hist}. Some of these variables only show few different values, however overall the distribution of the (scaled) variables appears to be suitable for further analysis. 
+All numeric variables after preprocessing are then displayed in some histograms in \autoref{fig:hist}. Some of these variables only show few different values, however overall the distribution of the (scaled) variables appears to be suitable for further analysis (as independent variables). 
  
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_preprocessing/histograms\string".pdf}
-  \caption{Illustration of variable selection for lasso based on the regularization term}\label{fig:step}
+  \caption{Matrix of histograms for preprocessed variables}\label{fig:step}
 \end{figure}
 
-For the PCA, the screeplot displayed in \autoref{fig:scree} is indecisive, as there are two "elbows".  We therefore use the solution in  between with 4 components, which explain about 70\% of the initial variance.  
+For the PCA, the screeplot displayed in \autoref{fig:scree} is indecisive, as there are two "elbows".  We therefore use the solution in between with 4 components, which explain about 70\% of the initial variance.  
 
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Data_preprocessing/screeplot\string".pdf}
-  \caption{Mean squared error versus the tested lambda values. Results from cross validation procedure for lasso.}\label{fig:scree}
+  \caption{Screeplot of the performed Principal Component Analysis}\label{fig:scree}
 \end{figure}
 
 

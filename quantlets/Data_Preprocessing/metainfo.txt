@@ -3,14 +3,14 @@ Name of Quantlet: Data_Preprocessing
 
 Published in: 'Statistical programming languages - Student Project on "House Prices: Advanced Regression Techniques" '
 
-Description: 'Analyses dataset on missings, performs imputation, handles outliers and empty factor levels. Performs PCA to reduce dimensionality. Three plots are created: a missmap, a matrix of histograms and screeplot for the PCA.'
+Description: 'Analyses dataset on missings, performs imputation, handles outliers and empty factor levels. Performs PCA to reduce dimensionality. Three plots are created: a missingnessmap, a matrix of histograms and screeplot for the PCA. The preprocessed dataset is split into training (80%) and test data (20%) and exported to .csv.'
 
 Keywords: Preprocessing, Imputation, Missing Values, PCA, Components, Factors, Outliers, NA
 
 Author: Christian Koopmann, Felix Skarke, Enno Tammena
 
-Submitted:  10.06.2017
+Submitted:  18.08.2017
 
-Input: 'train.csv'
+Input: train.csv
 
 Output: train_preprocessed.csv, missmap.pdf, screeplot.pdf, histograms.pdf
