@@ -107,8 +107,8 @@ corr.barplot = function(numb.corr) {
         df = data.frame(x.plotting, y.plotting)
         df$x.plotting = factor(df$x.plotting, levels = df[order(abs(df$y.plotting), decreasing = TRUE), "x.plotting"])
         
-        ggplot(data = df, aes(x.plotting, y.plotting), fill = as.factor(x.plotting)) + geom_bar(stat = "identity") + 
-            theme(axis.title.x = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12)) + 
+        ggplot(data = df, aes(x.plotting, y.plotting), fill = as.factor(x.plotting)) + geom_bar(stat = "identity", color = "black", fill = "black") + 
+            theme(panel.background = element_rect(fill = "white", colour = "black"),axis.title.x = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12)) + 
             ylab("Correlation") + ggtitle(paste("Barplot of the", numb.corr, "highest bivariate correlations with SalePrice", 
             sep = " "))
     }
@@ -143,7 +143,7 @@ boxplot.target = function(categoric) {
         
         # creating the boxplot
         ggplot(plot.data, aes(x = categoric.x, y = V1)) + geom_boxplot() + labs(title = paste("Boxplots of SalePrice", 
-            "\n", "depending on", categoric, sep = " "), x = categoric, y = "SalePrice")
+            "\n", "depending on", categoric, sep = " "), x = categoric, y = "SalePrice") + theme_classic()
     }
 }
 
@@ -154,22 +154,37 @@ boxplot.list = list()  # setting up empty list to save results of boxplot functi
 first.variable = 1     # position of first variable to use 
 last.variable  = 6     # position of last variable to use
 
-# filling boxplot.list with the results of boxplot.target function
+# filling boxplot.list with the results of boxplot.target function and saving results as pdf
+for (j in 1:7){
+    for (i in first.variable:last.variable) {
+        plotting.variable = colnames(categoric.data[i])
+        boxplot.loop      = boxplot.target(plotting.variable)
+        boxplot.list      = c(boxplot.list, list(boxplot.loop))
+      }
+    # saving the plots as PDF
+    path = file.path(getwd(), paste("boxplot_", first.variable, "through", last.variable, ".pdf", sep = ""))
+  
+    pdf(file = path)
+    do.call("grid.arrange", c(boxplot.list, ncol = 2))
+    dev.off()
+    boxplot.list = list()
+    
+    # changing variables to be used
+    first.variable = first.variable + 6
+    if(j == 6){last.variable = last.variable + 7}else{last.variable = last.variable + 6}
+}
+
+
+# printing the plots in RStudio
 for (i in first.variable:last.variable) {
     plotting.variable = colnames(categoric.data[i])
     boxplot.loop      = boxplot.target(plotting.variable)
     boxplot.list      = c(boxplot.list, list(boxplot.loop))
 }
 
-# printing the plots in RStudio 
 do.call("grid.arrange", c(boxplot.list, ncol = 2))
 
-# saving the plots as PDF
-path = file.path(getwd(), paste("boxplot_", first.variable, "through", last.variable, ".pdf", sep = ""))
 
-pdf(file = path)
-do.call("grid.arrange", c(boxplot.list, ncol = 2))
-dev.off()
 
 
 
