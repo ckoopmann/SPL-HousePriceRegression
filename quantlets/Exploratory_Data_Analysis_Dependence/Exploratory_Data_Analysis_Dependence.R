@@ -11,7 +11,7 @@ lapply(libraries, function(x) if (!(x %in% installed.packages())) {
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
 # setting up working directory
-setwd("C:/Users/Felix/Uni/SPL/HousePriceRegression/quantlets/Exploratory_Data_Analysis_Dependence")
+setwd("C:/Users/Felix/Uni/Programming/SPL-HousePriceRegression/quantlets/Exploratory_Data_Analysis_Dependence")
 
 # Read in training Data:
 data = read.csv("train.csv")
@@ -66,10 +66,10 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
     # save resulting correlation matrix
     pdf("Corrplot.pdf")
     if (corr.test == FALSE) {
-        corrplot(corr.numeric.adjusted, method = "square")
+        corrplot(corr.numeric.adjusted, method = "square", tl.col = "black")
     } else {
         corrplot(corr.numeric.adjusted, p.mat = correlation.test(corr.numeric.adjusted), sig.level = significance, 
-            method = "square")
+            method = "square", tl.col = "black")
     }
     dev.off()
     

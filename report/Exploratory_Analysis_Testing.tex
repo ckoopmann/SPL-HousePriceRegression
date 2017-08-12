@@ -29,8 +29,9 @@ In Tables \ref{tab:categoric.overview1} to \ref{tab:numeric.overview2} we show t
 
 \input{\string"../quantlets/Exploratory_Data_Analysis/numeric_overview\string".tex}
 
-\subsubsection{Exploratory Data Analysis Univariate}
-Regarding the analysis of the dependence structures we have the following results.
+\subsubsection{Exploratory Data Analysis Dependence}
+Regarding the analysis of the dependence structures we have different graphical representations depending on the scale of the variables. First looking at Figure \ref{fig:corrgram} one can see that 27 out of 37 numeric variables in the dataset are present in the correlogram. This is the case, because a cutoff value of 0.3 was chosen in order not to overcrowd the plot with all variables, making it harder to spot potential patterns. It stands out, that the plot shows more positive correlations (blue) than negative (red). Additionally to the colourcoding of signs, one can see black crosses indicating, where testing does not reject the null hypothesis of no correlation. Overall more correlations are insignificant than significant, but looking at the dependent variable of this analysis the picture changes. Most of the correlations are significant and positive, which suggests that the numeric variables in the dataset can be good predictors in our models. To examine the relationship between \textit{SalePrice} and the numeric variables further we plot the correlations in an ordered barplot. Figure \ref{fig:barplot_ordered} shows that all of the 20 highest correlations are positive. Only 10 of those have a value above 0.5. The plot reveals, that many of the numeric variables in the dataset are not linked very strongly to \textit{SalePrice}, at least when looking at bivariate linear relationships. The variables with the highest correlations are \textit{OverallQual}, \textit{GrLivArea}, \textit{GarageCars}, \textit{GarageArea} and \textit{TotalBsmtSF}. This result is not surprising, since all of those are in context of either living and garage space or overall material and finish of the houses. \\
+Besides the numeric variables, the dataset contains 43 categoric variables, which can prove useful in predicting house prices. In order to analyze the relationships in the data, we create boxplots of the target variable for each level of the independent variables. If the distribution of \textit{SalePrice} is very different for each level, the boxplots signal information that can be used in building models. Figure \ref{fig:box1to6} through Figure \ref{fig:box31to36} present the results. Variables like \textit{Neighbourhood} in Figure \ref{fig:box7to12} show sensically a big range of different  distributions of house prices. Others like \textit{GarageCond} and \textit{PavedDrive} in Figure \ref{fig:box37to43} look less promissing. In general though, for most of the categorical variables the house prices seem to depend on their levels. All the graphs presented in this section suggest, that the data is sufficiently linked to \textit{SalePrice} to be able to produce decent predictions. 
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis_Dependence/Corrplot\string".pdf}
@@ -90,6 +91,17 @@ Regarding the analysis of the dependence structures we have the following result
   	\label{fig:box31to36}
 \end{minipage}
 \end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{.5\textwidth}
+\centering
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis_Dependence/boxplot_37through43\string".pdf}
+  	\caption{boxplots of \textit{SalePrice} for levels of categoric variables 37-43}
+  	\label{fig:box37to43}
+\end{minipage}
+\end{figure}
+
 
 
 
