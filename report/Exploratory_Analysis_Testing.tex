@@ -6,28 +6,26 @@ In Figure \ref{fig:logpricehist} we have repeated this analysis after applying a
 
 In Tables \ref{tab:categoric.overview1} to \ref{tab:numeric.overview2} we show the overview tables explained in the implementation section of this analysis. From the tables we can see that only very few variables contain any NAs. We can also see that there are quite a few categoric variables where the vast majority of observations takes on the same factor level (for example \textit{Street, RoofMat1, LandSlope}), we will explain in the sections below how we tackle that challenge.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
-\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis/PriceHist\string".pdf}
+\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis/PriceHist\string".pdf}
   \caption{Histogram of Sale Prices}\label{fig:pricehist}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \centering
-\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis/LogPriceHist\string".pdf}
+\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis/LogPriceHist\string".pdf}
   \caption{Histogram of Log Sale Prices}\label{fig:logpricehist}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \centering
-\includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis/StdPriceQQ\string".pdf}
+\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Exploratory_Data_Analysis/StdPriceQQ\string".pdf}
   \caption{QQ-Plot of standardised Log Sale Prices}\label{fig:stdpriceqq}
 \end{figure}
 
 
-\input{\string"../quantlets/Exploratory_Data_Analysis/categoric_overview\string".tex}
 
-\input{\string"../quantlets/Exploratory_Data_Analysis/numeric_overview\string".tex}
 
 \subsubsection{Exploratory Data Analysis Dependence}
 Regarding the analysis of the dependence structures we have different graphical representations depending on the scale of the variables. First looking at Figure \ref{fig:corrgram} one can see that 27 out of 37 numeric variables in the dataset are present in the correlogram. This is the case, because a cutoff value of 0.3 was chosen in order not to overcrowd the plot with all variables, making it harder to spot potential patterns. It stands out, that the plot shows more positive correlations (blue) than negative (red). Additionally to the colourcoding of signs, one can see black crosses indicating, where testing does not reject the null hypothesis of no correlation. Overall more correlations are insignificant than significant, but looking at the dependent variable of this analysis the picture changes. Most of the correlations are significant and positive, which suggests that the numeric variables in the dataset can be good predictors in our models. To examine the relationship between \textit{SalePrice} and the numeric variables further we plot the correlations in an ordered barplot. Figure \ref{fig:barplot_ordered} shows that all of the 20 highest correlations are positive. Only 10 of those have a value above 0.5. The plot reveals, that many of the numeric variables in the dataset are not linked very strongly to \textit{SalePrice}, at least when looking at bivariate linear relationships. The variables with the highest correlations are \textit{OverallQual}, \textit{GrLivArea}, \textit{GarageCars}, \textit{GarageArea} and \textit{TotalBsmtSF}. This result is not surprising, since all of those are in context of either living and garage space or overall material and finish of the houses. \\
