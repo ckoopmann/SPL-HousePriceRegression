@@ -191,7 +191,7 @@ plot.list = list(lm.plot, fwd.plot, lasso.plot, ridge.plot, gbm.plot, rf.plot) #
 plot.loop = seq(length(plot.list))
 plot.loop = plot.loop[seq(length(plot.list)) %% 2 != 0]
 
-pdf("Model_comparison.pdf", onefile = TRUE)           
+pdf("Model_comparison.pdf", onefile = TRUE, height = 11.00, width = 11.69)           
 for (i in plot.loop) {                                                         # looping through all models, creating a pdf with two plots per page for readability
     j = i + 1
     grid.arrange(grobs = list(plot.list[[i]], plot.list[[j]]))  
