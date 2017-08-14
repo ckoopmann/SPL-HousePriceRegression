@@ -104,8 +104,8 @@ colnames(comparison.result) = c("lm", "fwd", "lasso", "ridge", "gbm", "rf")
 comparison.result
 
 # Writing a latex table containing the model comparison results
-# modelcomparison_latex = xtable(comparison.result)
-# print(modelcomparison_latex, file = "modelcomparison.tex")
+modelcomparison_latex = xtable(comparison.result, digits = 3, caption = "Performance measures for all implemented models", label = "tab:measures")
+print(modelcomparison_latex, file = "modelcomparison.tex")
 
 #################################################################################
 # Plotting the estimations against the real values in the test dataset
