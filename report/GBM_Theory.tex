@@ -12,7 +12,7 @@ For the first problem we fit a new week learner from a function space $H$ to the
 $$h_m = \argmin_{h \in H} \sum_{i = 1}^n (z_i - h(x_i))^2$$
 with $z_i = Y_i - F_{m-1}(x_i)$. The name Gradient Boosting stems from the observation that for the quadratic loss function $L(x) = x^2$ this residual equals half the gradient:
 $$z_i = \frac{1}{2}\frac{dL(x)}{dx}|_{x = (Y_i - F_{m-1}(x_i)}$$
-Using this definition the approach can easily be generalised to arbitrary differentiable functions. 
+Using this definition the approach can easily be generalised to arbitrary differentiable functions (\cite{friedman_greedy_2001}, \cite{friedman_stochastic_2002}). 
 In this framework of an arbitrary loss function we get the weights by just minimising the Loss function with respect to the weights. Therefore for the new weight at the $m$th iteration we get:
 $$\beta_m = \argmin_{\beta_m} \sum_{i = 1}^n L(Y_i - (F_{m-1}(x_i) + \beta_m h_m(x_i))$$
 Based on the above stated procedures to get base learners and ensemble weights the simplest version of the boosting algorithm works in the following way:

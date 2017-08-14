@@ -88,16 +88,6 @@
 \thispagestyle{empty}
 \input{titlepage}
 
-
-
-% -----------------------------
-% --- frontmatter: Abstract ---
-% -----------------------------
-\newpage
-\input{abstract}
-
-
-
 % -----------------------------
 % --- frontmatter: Contents ---
 % -----------------------------
@@ -163,11 +153,6 @@
 	\input{Evaluation_Testing}
 \newpage
 \input{Conclusions}
-\newpage
-\section{Appendix}
-	\input{Appendix}
-
-
 % ----------------
 % --- appendix ---
 % ----------------
@@ -176,7 +161,13 @@
 % literature
 \newpage
 \addcontentsline{toc}{section}{References}
-%\bibliography{literature}
+\bibliography{literature}
+\newpage
+\section{Appendix}
+	\input{Appendix}
+
+
+
 
 
 

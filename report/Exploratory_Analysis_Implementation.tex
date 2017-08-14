@@ -1,5 +1,91 @@
 \subsection{Exploratory Data Analysis}
-TODO (Felix / Christian)
+The Exploratory Data Analysis in this project was separated into two parts: The first part (implemented in the quantlet \textit{Exploratory\_Data\_Analysis.R}) concentrates on the univariate analysis of the target variable as well as some general overview of the categoric and numeric variables in the dataset, while the second part (\textit{Exploratory\_Data\_Analysis\_Dependence.R}) analyses the dependence and correlation structure between the explanatory variables and the target variable. 
+
+\subsubsection{Exploratory Data Analysis Univariate}
+The first part begins with an analysis of the distribution of the target variable \textit{SalePrice} both in its original form as well as its distribution after taking the logarithm. In both cases we create a histogram using the corresponding function from the \textit{ggplot2} package. Than we add to the plot both the empirical density function as well as the density of a normal function with mean and variance set to the empirical estimates. This is done calling  \textit{stat\_function} with the \textit{fun} parameter set to the normal density \textit{dnorm} function.
+\begin{lstlisting}[language=R]
+price.hist = ggplot(data, aes(x = SalePrice)) + geom_histogram(aes(y = ..density..), bins = 20, 
+    colour = "black", fill = "white") + geom_density(alpha = 0.2, fill = "#FF6666") + ggtitle("Distribution of Sale Price vs. Normal Distribution") + 
+    xlab("Sale Price") + stat_function(fun = dnorm, args = list(mean = mean(data$SalePrice, 
+    na.rm = TRUE), sd = sd(data$SalePrice, na.rm = TRUE)), col = "blue", size = 2)
+ggsave(filename = "PriceHist.pdf")
+# Histogram and QQ Plot of Log Prices
+logprice.hist = ggplot(data, aes(x = log(SalePrice))) + geom_histogram(aes(y = ..density..), 
+    bins = 20, colour = "black", fill = "white") + geom_density(alpha = 0.2, fill = "#FF6666") + 
+    ggtitle("Distribution of  Log Sale Price vs. Normal Distribution") + xlab("Log Sale Price") + 
+    stat_function(fun = dnorm, args = list(mean = mean(log(data$SalePrice), na.rm = TRUE), sd = sd(log(data$SalePrice), 
+        na.rm = TRUE)), col = "blue", size = 2)
+ggsave(filename = "LogPriceHist.pdf")
+\end{lstlisting}
+After creating the histograms we furthermore create a qq-plot of the standardised log prices. For this we substract the mean from the log-SalePrice and divide by the standard deviation. Then we create the qq-plot using the corresponding function from the \textit{ggplot2} package to compare the quantiles against those of the standard normal distribution.
+
+\begin{lstlisting}[language=R]
+stdprice.qq = ggplot(data, aes(sample = (log(SalePrice) - mean(log(SalePrice), na.rm = TRUE))/sd(log(SalePrice), 
+    na.rm = TRUE))) + stat_qq() + geom_abline(slope = 1, intercept = 0, col = "red") + ggtitle("QQ-Plot of Standardised Log Sale Price") + 
+    xlab("Standardised Log Sale Price")
+ggsave(filename = "StdPriceQQ.pdf")
+\end{lstlisting}
+
+While the qq-Plot completes the analysis of the target variable  we continue with an overview over categoric and numeric input variables. For this we first separate the data set accordingly into two datasets of numeric and categoric variables. For this we extract the column classes by applying the \textit{class} function to each column using \textit{sapply}. We then use a logical comparison of this vector as column index to generate the respective sub-datasets.
+\begin{lstlisting}[language=R]
+# Get Column Classes:
+colclasses = sapply(data, class)
+table(colclasses)
+
+# Seperate data in numeric and categoric variables for further analysis
+numeric.data = data[, names(colclasses[colclasses != "factor"])]
+categoric.data = data[, names(colclasses[colclasses == "factor"])]
+\end{lstlisting}
+For the overview of the categoric variables we define new functions which return the most frequent factor level, the frequency of that level and the total number of unique levels for each variable. We then apply each of these functions across the columns of the categoric data set and bind the results together in one \textit{data.frame}.
+\begin{lstlisting}[language=R]
+# Define Functions for variable overview
+getmode = function(x) {
+    x = x[!is.na(x)]
+    unique(x)[which.max(tabulate(match(x, unique(x))))]
+}
+getmodefreq = function(x) {
+    mean(x == getmode(x), na.rm = TRUE)
+}
+getlevelcount = function(x) {
+    x = x[!is.na(x)]
+    length(unique(x))
+}
+
+# Create Overview table for categoric variables:
+categoric.overview = data.frame(NACount = colSums(sapply(categoric.data, is.na)), LevelCount = sapply(categoric.data, 
+    FUN = getlevelcount), Mode = sapply(categoric.data, FUN = getmode), ModeFrequency = sapply(categoric.data, 
+    FUN = getmodefreq))
+\end{lstlisting} 
+
+For the overview over numeric variables we follow a very similar approach. However in this case we additionally calculate the mean, median and standard deviation of each variable. To be able to exclude NAs from these calculation we create new functions for these calculations which just call the original function with $na.rm$ set to TRUE.
+\begin{lstlisting}[language=R]
+#These are just wrappers around existing functions setting na.rm = TRUE
+meanwrapper       = function(x) mean(x, na.rm = TRUE)
+medianwrapper     = function(x) median(x, na.rm = TRUE)
+sdwrapper         = function(x) sd(x, na.rm = TRUE)
+
+# Create Overview table for numeric variables
+numeric.overview = data.frame(NACount = colSums(sapply(numeric.data, is.na)), LevelCount = sapply(numeric.data, 
+    FUN = getlevelcount), Mode = sapply(numeric.data, FUN = getmode), ModeFrequency = sapply(numeric.data, 
+    FUN = getmodefreq), Mean = sapply(numeric.data, FUN = meanwrapper), Median = sapply(numeric.data, 
+    FUN = medianwrapper), SD = sapply(numeric.data, FUN = sdwrapper))
+\end{lstlisting} 
+Since both of these tables are very long we divide them into smaller tables of length 30 when saving them as latex files for including in this reports using multiple calls to the \ref{xtable} function from a loop:
+\begin{lstlisting}[language=R]
+# Export Categorical Overview as Latex Table
+rows.per.table = 30
+row.indices = seq(from = 1, to = nrow(numeric.overview), by = rows.per.table)
+latex.vector = character(0)
+for(i in 1:length(row.indices)){
+    cap = paste0("Overview Numeric Variables Table:",i)
+    lab = paste0("tab:numeric.overview",i)
+    numeric.overview_latex = xtable(numeric.overview[row.indices[i]:min(row.indices[i] + rows.per.table - 1, nrow(numeric.overview)),,drop = FALSE], caption = cap, label =lab)
+    latex.vector = c(latex.vector, print(numeric.overview_latex))
+}
+all.latex = paste(latex.vector, collapse = "\n")
+writeLines(all.latex, con = "numeric_overview.tex")
+\end{lstlisting} 
+
 \subsubsection{Exploratory Data Analysis Dependence}
 After investigating data, each variables on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea how to use the available data in the models one is aiming for. For this project we implemented three functions. One creates a correlation plot, showing how correlated the numeric variables are each with every other variable. Another examines the relationship between the target variable SalePrice and lastly a function that creates boxplots of SalePrice depending on the levels of the categoric variables. Because of the different uses of variable scales the dataset is split into numeric and categoric data as input for the functions. \\
 The first function is called corr.func and produces a correlation  plot giving the user some options on what the function output should contain.
