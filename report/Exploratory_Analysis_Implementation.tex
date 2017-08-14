@@ -87,24 +87,29 @@ writeLines(all.latex, con = "numeric_overview.tex")
 \end{lstlisting} 
 
 \subsubsection{Exploratory Data Analysis Dependence}
-After investigating data, each variables on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea how to use the available data in the models one is aiming for. For this project we implemented three functions. One creates a correlation plot, showing how correlated the numeric variables are each with every other variable. Another examines the relationship between the target variable SalePrice and lastly a function that creates boxplots of SalePrice depending on the levels of the categoric variables. Because of the different uses of variable scales the dataset is split into numeric and categoric data as input for the functions. \\
-The first function is called corr.func and produces a correlation  plot giving the user some options on what the function output should contain.
+After investigating data, each variables on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea how to use the available data in the models one is aiming for. For this project we implemented three functions. One creates a correlation plot, showing how correlated the numeric variables are each with every other variable. Another examines the relationship between the target variable \textit{SalePrice} and lastly a function that creates boxplots of \textit{SalePrice} depending on the levels of the categoric variables available. Because of the different uses of variable scales the dataset is split into numeric and categoric data as input for the functions. \\
+The first function is called \textit{corr.func} and produces a correlation  plot giving the user some options on what the function output should contain.
 \begin{lstlisting}[language=R]
 corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, significance = 0.05) {
     corr.numeric = cor(na.omit(numeric.data))               # produces correlation matrix of all numeric variables in the dataset
+    
     # find columns of data, which have correlations higher then cut.value
     find.rows = apply(corr.numeric, 1, function(x) sum(abs(x) > abs(cut.value)) > 1)
+    
     # subset correlation matrix for plotting
     corr.numeric.adjusted = corr.numeric[find.rows, find.rows]
+    
     # find data, which has low correlation
     low.corr = colnames(corr.numeric) %in% colnames(corr.numeric.adjusted)
     cat("The variables", "\n", paste0(colnames(corr.numeric)[!low.corr], collapse = ", "), "\n", "have very low bivariate correlations with the other numeric variables in the training data set!")
+    
     # test correlations at certain significance level using a function, that produces a p-value matrix for all bivariate correlations
     correlation.test = function(corr.data) {
         corr.data            = as.matrix(corr.data)
         n                    = ncol(corr.data)
         p.value.matrix       = matrix(NA, n, n)
         diag(p.value.matrix) = 0
+        
         for (i in 1:(n - 1)) {
             for (j in (i + 1):n) {
                 tmp = cor.test(corr.data[, i], corr.data[, j])            # testing correlation
@@ -114,13 +119,15 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
         }
         return(p.value.matrix)
     }
+    
+    
     # save resulting correlation matrix
     pdf("Corrplot.pdf")
     if (corr.test == FALSE) {
-        corrplot(corr.numeric.adjusted, method = "square")
+        corrplot(corr.numeric.adjusted, method = "square", tl.col = "black")
     } else {
         corrplot(corr.numeric.adjusted, p.mat = correlation.test(corr.numeric.adjusted), sig.level = significance, 
-            method = "square")
+            method = "square", tl.col = "black")
     }
     dev.off()
     
@@ -129,8 +136,8 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
         return(corr.numeric.adjusted)
 }
 \end{lstlisting}
-The inputs of the functions are a dataset, a cut.value one has to choose, corr.mat and corr.test ,which both default to FALSE and significance, which defaults to 0.05. The function first produces a correlation matrix of the input data without missing values and uses this matrix of all numeric variables to find the ones which do not correlate with any other variable above the cutoff value set by the user using the apply function. These variables are excluded from the final graph and are spelled out to the user. Inside corr.func there is another function called correlation.test. This function uses the cutoff adjusted correlation matrix to produce p-values of a correlation test at the significance level chosen in the input of the main function. If the input corr.test is used with its default value FALSE then a plain correlation plot is saved using the package corrplot. Otherwise the p-value matrix from correlation.test is shown in the plot via crosses indicating non-significance. Lastly if one chooses to set corr.mat to TRUE, the raw correlation matrix is displayed. \\
-The second function corr.barplot focuses on the relationship between the target variable and all the other numeric variables in the dataset. 
+The inputs of the function are \textit{data}, a \textit{cut.value} one has to choose, \textit{corr.mat} and \textit{corr.test} ,which both default to FALSE and \textit{significance}, which defaults to 0.05. The function first produces a correlation matrix of the input data without missing values and uses this matrix of all numeric variables to find the ones which do not correlate with any other variable above the cutoff value set by the user using the \textit{apply} function. These variables are excluded from the final graph and are spelled out to the user. Inside \textit{corr.func} there is another function called \textit{correlation.test}. This function uses the cutoff adjusted correlation matrix to produce p-values of a correlation test at the significance level chosen in the input of the main function. If the input \textit{corr.test} is used with its default value FALSE then a plain correlation plot is saved using the package \textit{corrplot}. Otherwise the p-value matrix from \textit{correlation.test} is shown in the plot via crosses indicating non-significance. Lastly if one chooses to set \textit{corr.mat} to TRUE, the raw correlation matrix is displayed. \\
+The second function \textit{corr.barplot} focuses on the relationship between the target variable and all the other numeric variables in the dataset. 
 \begin{lstlisting}[language=R]
 corr.barplot = function(numb.corr) {
     if (numb.corr > ncol(numeric.data) - 1) {
@@ -140,9 +147,11 @@ corr.barplot = function(numb.corr) {
         correlation.data    = numeric.data[!correlation.vars]                  # subsetting the numeric variables to not contain the target variable
         correlations        = vector(length = length(names(correlation.data))) # setting up vector for results (correlations)
         names(correlations) = names(correlation.data)
+        
         for (i in names(correlation.data)) {                                   # calculating all bivariate correlations
             correlations[i] = cor(numeric.data$SalePrice, correlation.data[i], use = "pairwise.complete.obs")
         }
+        
         # setting up the results for plotting
         y.plotting = correlations[order(abs(correlations), decreasing = TRUE)][1:numb.corr]
         x.plotting = names(y.plotting)
@@ -150,14 +159,14 @@ corr.barplot = function(numb.corr) {
         df = data.frame(x.plotting, y.plotting)
         df$x.plotting = factor(df$x.plotting, levels = df[order(abs(df$y.plotting), decreasing = TRUE), "x.plotting"])
         
-        ggplot(data = df, aes(x.plotting, y.plotting), fill = as.factor(x.plotting)) + geom_bar(stat = "identity") + 
-            theme(axis.title.x = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12)) + 
+        ggplot(data = df, aes(x.plotting, y.plotting), fill = as.factor(x.plotting)) + geom_bar(stat = "identity", color = "black", fill = "black") + 
+            theme(panel.background = element_rect(fill = "white", colour = "black"),axis.title.x = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12)) + 
             ylab("Correlation") + ggtitle(paste("Barplot of the", numb.corr, "highest bivariate correlations with SalePrice", 
             sep = " "))
     }
 }
 \end{lstlisting}
-The function corr.barplot only has one input parameter numb.corr, where one has to choose the number of correlations to plot. If a number greater than the number of numeric variables other than the target variable is chosen a warning  is returned. Otherwise the numeric data is split into the dependent variable and the rest. Afterwards all the correlations between SalePrice and the other variables are calculated and stored. For plotting only the variables with the highest absolute correlations up to the specified numb.corr are used. We used the package ggplot2 to create a barplot of the ordered (in absolute value) correlations (in real value) within the function. Calling the function therefore plots the resulting barplot directly in \textsf{R}. \\
+The function \textit{corr.barplot} only has one input parameter \textit{numb.corr}, where one has to choose the number of correlations to plot. If a number greater than the number of numeric variables other than the target variable is chosen a warning  is returned. Otherwise the numeric data is split into the dependent variable and the rest. Afterwards all the correlations between \textit{SalePrice} and the other variables are calculated and stored. For plotting only the variables with the highest absolute correlations up to the specified \textit{numb.corr} are used. We use the package \textit{ggplot2} to create a barplot of the ordered (in absolute value) correlations (in real value) within the function. Calling the function therefore plots the resulting barplot directly in \textsf{R}. \\
 The third function depicts the relationship between the target variable and categoric variables. 
 \begin{lstlisting}[language=R]
 boxplot.target = function(categoric) {
@@ -169,10 +178,11 @@ boxplot.target = function(categoric) {
         plot.data = as.data.frame(cbind(data$SalePrice, categoric.x))
         plot.data[[2]] = as.factor(plot.data[[2]])
         levels(plot.data[[2]]) = levels(categoric.x)
+        
         # creating the boxplot
         ggplot(plot.data, aes(x = categoric.x, y = V1)) + geom_boxplot() + labs(title = paste("Boxplots of SalePrice", 
-            "\n", "depending on", categoric, sep = " "), x = categoric, y = "SalePrice")
+            "\n", "depending on", categoric, sep = " "), x = categoric, y = "SalePrice") + theme_classic()
     }
 }
 \end{lstlisting}
-The function boxplot.target takes one input named categoric, which is the data that is supposed to be used creating the boxplots. If the input variable is not categoric the function displays a warning, that numeric variables cannot be used within this function. Boxplot.target prepares the data first, by creating a dataframe consisting of the dependent variable and the categoric variable chosen. Afterwards it produces boxplots of SalePrice depending on each of the levels of the independent variable using ggplot2.
+The function \textit{boxplot.target} takes one input named \textit{categoric}, which is the data that is supposed to be used creating the boxplots. If the input variable is not categoric the function displays a warning, that numeric variables cannot be used within this function. \textit{Boxplot.target} prepares the data first, by creating a dataframe consisting of the dependent variable and the categoric variable chosen. Afterwards it produces boxplots of \textit{SalePrice} depending on each of the levels of the independent variable using \textit{ggplot2}.
