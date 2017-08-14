@@ -104,8 +104,8 @@ colnames(comparison.result) = c("lm", "fwd", "lasso", "ridge", "gbm", "rf")
 comparison.result
 
 # Writing a latex table containing the model comparison results
-modelcomparison_latex = xtable(comparison.result, digits = 3, caption = "Performance measures for all implemented models", label = "tab:measures")
-print(modelcomparison_latex, file = "modelcomparison.tex")
+# modelcomparison_latex = xtable(comparison.result, digits = 3, caption = "Performance measures for all implemented models", label = "tab:measures")
+# print(modelcomparison_latex, file = "modelcomparison.tex")
 
 #################################################################################
 # Plotting the estimations against the real values in the test dataset
@@ -155,7 +155,7 @@ df.lasso.fit      = data.frame(cbind(test$logSalePrice, predictions.lasso))
 lasso.plot = ggplot(df.lasso.fit, aes(V1, predictions.lasso)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Lasso regression model", 
     x = "logSalePrice", y = "lasso.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[3]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
-    annotate("text", label = paste("MAE:", round(coeff.lm[[3]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
+    annotate("text", label = paste("slope:", round(coeff.lm[[3]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
 lasso.plot
 
 # ridge.fit plot
@@ -194,7 +194,7 @@ plot.loop = plot.loop[seq(length(plot.list)) %% 2 != 0]
 pdf("Model_comparison.pdf", onefile = TRUE)           
 for (i in plot.loop) {                                                         # looping through all models, creating a pdf with two plots per page for readability
     j = i + 1
-    grid.arrange(grobs = list(plot.list[[1]], plot.list[[2]]))  
+    grid.arrange(grobs = list(plot.list[[i]], plot.list[[j]]))  
 }
 dev.off()
 

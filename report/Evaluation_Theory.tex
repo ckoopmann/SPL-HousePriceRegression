@@ -9,16 +9,16 @@ or
 \begin{align*}
 L(Y,\hat{f}(X))=|Y-\hat{f}(X)|\;\; \text{in the case of MAE}
 \end{align*}
-MSE and MAE are defined as the expectation of the loss function over the whole distribution. In reality these quantities have to be estimated using the test data, giving:
+Y are the real values and $\hat{f}(X)$ are the model predictions based on a function of additional information. For example in the case of linear regression this would be a linear combination of independent variables. MSE and MAE are defined as the expectation of the loss function over the whole distribution. In reality these quantities have to be estimated using the test data, giving:
 \begin{align}
 \hat{MSE}=\frac{1}{n}\sum_{i=1}^n(y_i-\hat{f}(x_i))^2
 \end{align}
 \begin{align}
 \hat{MAE}=\frac{1}{n}\sum_{i=1}^n|y_i-\hat{f}(x_i)|
 \end{align}
-,where n is the number of observations in the test set. MSE and MAE both are measures that indicate the magnitude of preditction error, but not the direction. That is because the prediction error is either squared or the absolute value is used. Additionally both metrics are scale dependent, due to the scale dependence of the prediction error. In our application that is of no concern, since we compare different models on the same data. On the contrary being on the same scale as the original data makes the MAE very easily interpretable. To get an idea of the direction of the predictions we also include an estimate of bias, simply by averaging over all forecast errors.
+,where n is the number of observations in the test set. MSE and MAE both are measures that indicate the magnitude of preditction error, but not the direction. That is because the prediction error is either squared or the absolute value is used. Additionally both metrics are scale dependent, due to the scale dependence of the prediction error. In our application that is of no concern, since we compare different models on the same data. On the contrary being on the same scale as the original data makes the MAE very easily interpretable. To get an idea of the direction of the error we also include an estimate of bias, simply by averaging over all prediction errors.
 \begin{align}
-\hat{Bias}=\frac{1}{n}\sum_{i=1}^n(y_i-\hat{f}(x_i))
+\hat{Bias}=\frac{1}{n}\sum_{i=1}^n(\hat{f}(x_i)-y_i)
 \end{align}
 The interpretation of the quantity is easy. If positive the predictions are on average too high and too low if the value is negative. As the last measure we look at $R^2$, which is very well known in the regression context. Conceptually $R^2$ is the proportion of variation in the target variable, that is explained by the predictors. The coefficient of determination as is it also called, as a proportion always ranges between zero and one. This property makes it different from the aforementioned metrics, because both boundaries have natural interpretations as perfect or worst possible fit.
 \begin{align}
