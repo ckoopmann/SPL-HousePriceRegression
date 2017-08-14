@@ -33,10 +33,10 @@ test$Id  = NULL
 model.mse = function(model, test.data = test) {
     if (class(model)[1] %in% c("train", "lm")) {
         pred = predict(model, newdata = test.data)
-        mse  = (1/ncol(test.data)) * sum((pred - test.data$logSalePrice)^2)
+        mse  = (1/nrow(test.data)) * sum((pred - test.data$logSalePrice)^2)
     } else {
         pred = predict(model, newx = as.matrix(test.data[!names(test.data) %in% "logSalePrice"]), s = "lambda.1se")
-        mse  = (1/ncol(test.data)) * sum((pred - test.data$logSalePrice)^2)
+        mse  = (1/nrow(test.data)) * sum((pred - test.data$logSalePrice)^2)
     }
     return(mse)
 }
@@ -45,10 +45,10 @@ model.mse = function(model, test.data = test) {
 model_overfit.mse = function(model, test.data = train) {
     if (class(model)[1] %in% c("train", "lm")) {
         pred = predict(model, newdata = test.data)
-        mse  = (1/ncol(test.data)) * sum((pred - test.data$logSalePrice)^2)
+        mse  = (1/nrow(test.data)) * sum((pred - test.data$logSalePrice)^2)
     } else {
         pred = predict(model, newx = as.matrix(test.data[!names(test.data) %in% "logSalePrice"]), s = "lambda.1se")
-        mse  = (1/ncol(test.data)) * sum((pred - test.data$logSalePrice)^2)
+        mse  = (1/nrow(test.data)) * sum((pred - test.data$logSalePrice)^2)
     }
     return(mse)
 }
@@ -58,10 +58,10 @@ model_overfit.mse = function(model, test.data = train) {
 model.mae = function(model, test.data = test) {
     if (class(model)[1] %in% c("train", "lm")) {
         pred = predict(model, newdata = test.data)
-        mae  = (1/ncol(test.data)) * sum(abs(pred - test.data$logSalePrice))
+        mae  = (1/nrow(test.data)) * sum(abs(pred - test.data$logSalePrice))
     } else {
         pred = predict(model, newx = as.matrix(test.data[!names(test.data) %in% "logSalePrice"]), s = "lambda.1se")
-        mae  = (1/ncol(test.data)) * sum(abs(pred - test.data$logSalePrice))
+        mae  = (1/nrow(test.data)) * sum(abs(pred - test.data$logSalePrice))
     }
     return(mae)
 }
@@ -70,10 +70,10 @@ model.mae = function(model, test.data = test) {
 model.bias = function(model, test.data = test) {
     if (class(model)[1] %in% c("train", "lm")) {
         pred = predict(model, newdata = test.data)
-        bias = (1/ncol(test.data)) * sum(pred - test.data$logSalePrice)
+        bias = (1/nrow(test.data)) * sum(pred - test.data$logSalePrice)
     } else {
         pred = predict(model, newx = as.matrix(test.data[!names(test.data) %in% "logSalePrice"]), s = "lambda.1se")
-        bias = (1/ncol(test.data)) * sum(pred - test.data$logSalePrice)
+        bias = (1/nrow(test.data)) * sum(pred - test.data$logSalePrice)
     }
     return(bias)
 }
