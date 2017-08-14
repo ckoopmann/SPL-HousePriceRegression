@@ -138,7 +138,7 @@ lm.plot = ggplot(df.lm.fit, aes(V1, predictions.lm)) + geom_point() + geom_segme
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Backward selection linear model", 
     x = "logSalePrice", y = "lm.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[1]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + annotate("text", 
     label = paste("slope:", round(coeff.lm[[1]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue") + theme_classic(base_size = 20) 
-lm.plot
+
 
 # fwd.fit plot
 df.fwd.fit      = data.frame(cbind(test$logSalePrice, predictions.fwd))
@@ -147,7 +147,7 @@ fwd.plot = ggplot(df.fwd.fit, aes(V1, predictions.fwd)) + geom_point() + geom_se
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Forward selection linear model", 
     x = "logSalePrice", y = "fwd.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[2]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[2]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
-fwd.plot
+
 
 # lasso.fit plot
 df.lasso.fit      = data.frame(cbind(test$logSalePrice, predictions.lasso))
@@ -156,7 +156,7 @@ lasso.plot = ggplot(df.lasso.fit, aes(V1, predictions.lasso)) + geom_point() + g
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Lasso regression model", 
     x = "logSalePrice", y = "lasso.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[3]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[3]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
-lasso.plot
+
 
 # ridge.fit plot
 df.ridge.fit     = data.frame(cbind(test$logSalePrice, predictions.ridge))
@@ -165,7 +165,7 @@ ridge.plot = ggplot(df.ridge.fit, aes(V1, predictions.ridge)) + geom_point() + g
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Ridge regression model", 
     x = "logSalePrice", y = "ridge.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[4]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[4]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
-ridge.plot
+
 
 # gbm plot
 df.gbm          = data.frame(cbind(test$logSalePrice, predictions.gbm))
@@ -174,7 +174,7 @@ gbm.plot = ggplot(df.gbm, aes(V1, predictions.gbm)) + geom_point() + geom_segmen
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Generalized boosted regression model", 
     x = "logSalePrice", y = "gbmtuned predictions") + annotate("text", label = paste("int:", round(coeff.lm[[5]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[5]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
-gbm.plot
+
 
 # rf plot
 df.rf          = data.frame(cbind(test$logSalePrice, predictions.rf))
@@ -183,7 +183,7 @@ rf.plot = ggplot(df.rf, aes(V1, predictions.rf)) + geom_point() + geom_segment(x
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Random forest", 
     x = "logSalePrice", y = "rftuned predictions") + annotate("text", label = paste("int:", round(coeff.lm[[6]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + annotate("text", 
     label = paste("slope:", round(coeff.lm[[6]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
-rf.plot
+
 
 # plotting resulting graphs together for compactness
 
