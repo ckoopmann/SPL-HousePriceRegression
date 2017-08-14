@@ -14,4 +14,4 @@ See also:
 Submitted:  10.06.2017
 
 Input: 'train_preprocessed.csv', 'test_preprocessed.csv', 'gbm.RData', 'rf.RData', 'regression_models_fit.RData' 
-Output: 'Model_Comparison.pdf', 'modelcomparison.tex'
+Output: 'Model_Comparison.pdf', 'modelcomparison.tex', 'lm_fit.pdf', 'fwd_fit.pdf', 'lasso_fit.pdf', 'ridge_fit.pdf', 'gbmtuned.pdf', 'rftuned.pdf'
