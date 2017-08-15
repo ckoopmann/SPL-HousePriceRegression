@@ -1,20 +1,30 @@
 \subsection{Gradient Boosting Machine}
 Just like the Random Forest, the Gradient Boosting Machine is also an ensemble method. The main idea behind boosting is to iteratively add new base learners to the ensemble that correct the error of the ensemble in the previous iteration. As with most ensemble methods the output of the model is a weighted average across the predictions of the base learners in the ensemble. With base learners $h_i$ and weights $\beta_i$ we therefore get for an ensemble of size $M$:
-$$F_M(x) = \sum_{i = 1}^M \beta_i h_i(x)$$ 
+\begin{align}
+F_M(x) = \sum_{i = 1}^M \beta_i h_i(x)
+\end{align}
 We can rewrite this in a recursive fashion as:
-$$F_M(x) = F_{M-1}(x) + \beta_M h_M(x)$$
+\begin{align}
+F_M(x) = F_{M-1}(x) + \beta_M h_M(x)
+\end{align}
 At each step we now face two identification problems:
 \begin{enumerate}
 \item Choose $h_M$
 \item Choose $\beta_M$
 \end{enumerate}
-For the first problem we fit a new week learner from a function space $H$ to the residuals $z$:
-$$h_m = \argmin_{h \in H} \sum_{i = 1}^n (z_i - h(x_i))^2$$
+For the first problem we fit a new weak learner from a function space $H$ to the residuals $z$:
+\begin{align}
+h_m = \argmin_{h \in H} \sum_{i = 1}^n (z_i - h(x_i))^2
+\end{align}
 with $z_i = Y_i - F_{m-1}(x_i)$. The name Gradient Boosting stems from the observation that for the quadratic loss function $L(x) = x^2$ this residual equals half the gradient:
-$$z_i = \frac{1}{2}\frac{dL(x)}{dx}|_{x = (Y_i - F_{m-1}(x_i)}$$
+\begin{align}
+z_i = \frac{1}{2}\frac{dL(x)}{dx}|_{x = (Y_i - F_{m-1}(x_i)}
+\end{align}
 Using this definition the approach can easily be generalised to arbitrary differentiable functions (\cite{friedman_greedy_2001}, \cite{friedman_stochastic_2002}). 
 In this framework of an arbitrary loss function we get the weights by just minimising the Loss function with respect to the weights. Therefore for the new weight at the $m$th iteration we get:
-$$\beta_m = \argmin_{\beta_m} \sum_{i = 1}^n L(Y_i - (F_{m-1}(x_i) + \beta_m h_m(x_i))$$
+\begin{align}
+\beta_m = \argmin_{\beta_m} \sum_{i = 1}^n L(Y_i - (F_{m-1}(x_i) + \beta_m h_m(x_i))
+\end{align}
 Based on the above stated procedures to get base learners and ensemble weights the simplest version of the boosting algorithm works in the following way:
 \begin{enumerate}
 \item Define some $F_0$. Often this is just the sample mean: $F_0 = \frac{1}{n}\sum_{i=1}^n Y_i$
@@ -26,6 +36,8 @@ Based on the above stated procedures to get base learners and ensemble weights t
 \end{enumerate}
 \end{enumerate}
 This algorithm can be adapted in various ways. Two of the most common adaptations are the use of an learning rate to avoid overfiting and adaptive weighting of the observations for the training of each base learner. For the first adaption we just specify a learning rate $\lambda < 1$ and update the model as: 
-$$F_M(x) = F_{M-1}(x) + \lambda \beta_M h_M(x)$$
-For the second adaption, one can use a variety of weighting schemes. The aim is generally to weight observations with a large classification error in the past iteration higher during the training of the new base learner. However in the boosting implementation that we used, this was not applied and it is therefore not explained in further detail here.
+\begin{align}
+F_M(x) = F_{M-1}(x) + \lambda \beta_M h_M(x)
+\end{align}
+For the second adaption, one can use a variety of weighting schemes. The aim is generally to weigh observations with a large classification error in the past iteration higher during the training of the new base learner. However in the boosting implementation that we used, this was not applied and it is therefore not explained in further detail here.
 As is usually the case the implementation we chose, uses regression trees as base learners. Therefore, the tuning parameter that have to be set are the tree depth of the base learner as well as the ensemble size and the learning rate.
