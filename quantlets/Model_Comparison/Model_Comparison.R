@@ -16,8 +16,8 @@ train = read.csv("train_preprocessed.csv")
 test  = read.csv("test_preprocessed.csv")
 
 # Read in trained models
-load("rf.RData")  # random forest
-load("gbm.RData")  # gradient boosting model
+load("rf.RData")                     # random forest
+load("gbm.RData")                    # gradient boosting machine
 load("regression_models_fit.RData")  # OLS based models
 
 
@@ -109,7 +109,7 @@ print(modelcomparison_latex, file = "modelcomparison.tex", table.placement = "H"
 # Plotting the estimations against the real values in the test dataset
 
 # Making predictions for every model on the test data
-predictions.bwd    = predict(lm.fit, newdata = test)                        
+predictions.bwd   = predict(lm.fit, newdata = test)                        
 predictions.fwd   = predict(fwd.fit, newdata = test)
 predictions.lasso = predict(lasso.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
 predictions.ridge = predict(ridge.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")

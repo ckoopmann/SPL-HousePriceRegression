@@ -24,7 +24,6 @@ categoric.data = data[, names(colclasses[colclasses == "factor"])]
 # Drop Id Variable since it is unnecessary here
 numeric.data$Id = NULL
 
-############################################################################
 
 # Part1: 
 # Analysing correlations for numeric variables
@@ -78,7 +77,6 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
 
 corr.func(numeric.data, cut.value = 0.3, corr.mat = FALSE, corr.test = TRUE)
 
-###################################################################################
 
 
 # Part 2:
@@ -121,7 +119,6 @@ pdf(file = path.barplot)
 corr.barplot(20)
 dev.off()
 
-############################################################################
 
 
 # Part 3: 

@@ -3,7 +3,7 @@ Name of Quantlet: Model_Comparison
 
 Published in: 'Statistical programming languages - Student Project on "House Prices: Advanced Regression Techniques" '
 
-Description: 'Reads in test and train data from csv-file and calculates out of sample performance measures for the trained models. Creates plots of real against predicted data, showing performance visually.'
+Description: 'Reads in test and train data from csv-file and calculates out-of-sample performance measures for the trained models. Creates plots of real against predicted data, showing performance visually.'
 
 Keywords: Model comparison, Mean Squared Error, overfitting, performance, prediction
 
@@ -13,5 +13,5 @@ See also:
 
 Submitted:  10.06.2017
 
-Input: 'train_preprocessed.csv', 'test_preprocessed.csv', 'gbm.RData', 'rf.RData', 'regression_models_fit.RData' 
-Output: Model_Comparison.pdf, modelcomparison.tex, lm_fit.pdf, fwd_fit.pdf, lasso_fit.pdf, ridge_fit.pdf, gbmtuned.pdf, rftuned.pdf
+Input: train_preprocessed.csv, test_preprocessed.csv, gbm.RData, rf.RData, regression_models_fit.RData 
+Output: Model_Comparison.pdf, modelcomparison.tex, bwd_fit.pdf, fwd_fit.pdf, lasso_fit.pdf, ridge_fit.pdf, gbmtuned.pdf, rftuned.pdf
