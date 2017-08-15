@@ -10,8 +10,6 @@ lapply(libraries, function(x) if (!(x %in% installed.packages())) {
 
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
-# setting up working directory
-setwd("C:/Users/Felix/Uni/Programming/SPL-HousePriceRegression/quantlets/Model_Comparison")
 
 # Read in pre-processed Data:
 train = read.csv("train_preprocessed.csv")
