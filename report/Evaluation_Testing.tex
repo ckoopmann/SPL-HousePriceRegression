@@ -1,12 +1,12 @@
 \subsection{Evaluation}
-After tuning and training all our models it is important to test their performance on "unseen" data, which is not included in the training of the models. For this purpose we hold back our test dataset on which we evaluate our models with different metrics namely the mean squared error (MSE), the mean squared error on the training data (looking for possible overfitting), the mean absolute error (MAE), the bias and the $R^2$. As one can see in Table \ref{tab:measures} the results do vary from model to model. Looking at the MSE first, we identify the self built backwards selection linear model, the forward selection model (having the lowest value) and the gbm model as best with regards to this metric. Lasso and Ridge regression have the worst values. This picture is confirmed by the other measures implemented. The linear models without regularization components and the gbm always show the best results, whereas the random forest gives "middle of the road" numbers and Lasso and Ridge regression have the highest results. One exception is the bias, where gbm has the highest figure. On the other hand all models show very low, but positive bias. One interesting thing, that can be taken away from Table \ref{tab:measures} as well, is the concern for possible overfitting for the gbm and random forest model.
-Both have an upwards movement in MSE when going from training to test data. This is most noticeable for the random forest, which has the lowest MSE in the training data by far and then is just slightly below Lasso and Ridge regression in the test data. In comparison the gbm only has a smaller uptick, which is very often the case when testing a model on real data. The other models though all show better results on the test data than on the training data. This might be a case of a "lucky sample" chosen by random as a test set, which in turn makes even the small increase in MSE for the gbm a bit suspicous. With regards to $R^2$ one can see very high values for all models confirming the ordering pointed out by the other measures. 
+After tuning and training all our models it is important to test their performance on "unseen" data, which is not included in the training of the models. For this purpose we hold back our test dataset on which we evaluate our models with different metrics namely the mean squared error on the test data (MSE), the mean squared error on the training data (looking for possible overfitting),  as well as  mean absolute error (MAE), bias and  $R^2$ all evaluated on the test data. As one can see in Table \ref{tab:measures} the results do vary from model to model. Looking at the MSE first, we identify the self built backwards selection linear model, the forward selection model (having the lowest value) and the Gradient Boosting Machine as best with regards to this metric. Lasso and Ridge regression have the worst values. This picture is confirmed by the other measures implemented. The linear models without regularization components and the GBM always show the best results, whereas the Random Forest lies somewhere in the middle and Lasso and Ridge regression have the highest results. One exception is the bias, where GBM has the highest figure. On the other hand all models show very low, but positive bias. One interesting thing, that can be taken away from Table \ref{tab:measures} as well, is the concern for possible overfitting for the GBM and Random Forest model.
+Both have an upwards movement in MSE when going from training to test data. This is most noticeable for the random forest, which has the lowest MSE in the training data by far and is just slightly below Lasso and Ridge regression in the test data. In comparison the GBM only has a smaller uptick, which is very often the case when testing a model on real data. The other models though all show better results on the test data than on the training data. This might be a case of a "lucky sample" chosen by random as a test set. With regards to $R^2$ one can see very high values for all models confirming the ordering pointed out by the other measures. 
 
 
 \input{\string"../quantlets/Model_Comparison/modelcomparison\string".tex}
 
 
-Besides the numbers presented in Table \ref{tab:measures} we give a graphical representation of our results. Every model is depicted in a scatterplot of the real \textit{logSalePrice} in the test dataset on the ordinate and the predicted values on the abscissa. Furthermore two lines are drawn. The red line indicates perfect prediction accuracy as mentioned in the implementation section about model evaluation. If all the points of the cloud lied on this line every price would be predicted with the correct value. That is of course unrealistic in practice, wherefore the points should be grouped as closely around the line as possible to have a good prediction result. The second blue line stems from a linear regression of the predictions on the real data. The reasoning behind this, is that the intercept and slope of the regression should be the same as of the red line (i.e. intercept = 0, slope = 1) if the model predicts well. A generell observation can be taken away from the graphs. All models seem to overestimate in the lower ranges of \textit{logSalePrice} (points mostly above the red line) and underestimate in the higher ranges (points mostly below the red line). This is confirmed by the slopes of the blue lines, since all of them are smaller than the ideal slope of one. Overall the graphs support, what can be seen in Table \ref{tab:measures}. For example looking at Figure \ref{fig:lasso} and Figure \ref{fig:ridge}, the point clouds are less tightly grouped around the red line, than in the other scatterplots. They also have the regression slopes (Lasso: 0.7905, Ridge: 0.7825) that differ the most from one. For the models with better results in the table, we see the opposite. Despite also not having a regression slope of one they come much closer (e.g. forward selection model: 0.9175 in Figure \ref{fig:fwd}). With the analysis both numerical and graphical the linear forward and backward selection models perform very well in contrast to Lasso and Ridge regression models. Gbm also predicts well, but has also a lower value for the MSE on the training data. This gives rise for a little concern of overfitting.    
+Besides the numbers presented in Table \ref{tab:measures} we give a graphical representation of our results. Every model is depicted in a scatterplot of the real \textit{logSalePrice} in the test dataset on the y-axis and the predicted values on the y-axis. Furthermore two lines are drawn. The red line indicates perfect prediction accuracy as mentioned in Section \ref{sec:Evaluation_Implementation} . If all the points of the cloud were on this line every price would be predicted with the correct value. That is of course unrealistic in practice, wherefore the points should be grouped as closely around the line as possible to have a good prediction result. The second blue line stems from a linear regression of the predictions on the real data. The reasoning behind this, is that the intercept and slope of the regression should be the same as those of the red line (i.e. intercept = 0, slope = 1) if the model predicts well. A general observation, which can be drawn from the graphs is that all models seem to overestimate in the lower ranges of \textit{logSalePrice} (points mostly above the red line) and underestimate in the higher ranges (points mostly below the red line). This is confirmed by the slopes of the blue lines, since all of them are smaller than the ideal slope of one. Overall the graphs support the results presented in Table \ref{tab:measures}. For example looking at Figure \ref{fig:Lasso} and Figure \ref{fig:Ridge}, the point clouds are less tightly grouped around the red line, than in the other scatterplots. They also contain the regression slopes  which differ the most from the ideal value one. For the models with better results in the table, we see the opposite. Despite neither having a regression slope of one they come much closer to this value. With the analysis both numerical and graphical the linear forward and backward selection models perform very well in contrast to Lasso and Ridge regression models. GBM also predicts well, but has  a much lower value for the MSE on the training data.
 
 
 
@@ -27,29 +27,29 @@ Besides the numbers presented in Table \ref{tab:measures} we give a graphical re
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/lasso_fit\string".pdf}
-  	\caption{Scatterplot of lasso model predictions and test data}
-  	\label{fig:lasso}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Lasso_fit\string".pdf}
+  	\caption{Scatterplot of Lasso model predictions and test data}
+  	\label{fig:Lasso}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/ridge_fit\string".pdf}
-  	\caption{Scatterplot of ridge model predictions and test data}
-  	\label{fig:ridge}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Ridge_fit\string".pdf}
+  	\caption{Scatterplot of Ridge model predictions and test data}
+  	\label{fig:Ridge}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/gbmtuned\string".pdf}
-  	\caption{Scatterplot of gbm model predictions and test data}
+  	\caption{Scatterplot of GBM model predictions and test data}
   	\label{fig:gbm}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/rftuned\string".pdf}
-  	\caption{Scatterplot of random forest model predictions and test data}
+  	\caption{Scatterplot of Random Forest model predictions and test data}
   	\label{fig:rf}
 \end{figure}
 

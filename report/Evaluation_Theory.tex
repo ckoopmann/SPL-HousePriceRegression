@@ -1,13 +1,13 @@
-\subsection{Evaluation Theory}
-In predictive modeling assessing the predictions made by a model is a very important step in the analysis. In our application assess the predictions already in the model building portion of it. Cross- validation is used minimizing the prediction error. After the model training is done the reasoning for computing performance measures on data unseen in the modeling process is twofold. First one has to be concerned with overfitting. The term overfitting expresses, that a model performs very well on the training data (in an extrem case, predicts every data point perfectly), but subsequently does very poorly on some test data. This has to be avoided, because usually predictive models are to be used on new data for which the values of the target variable are not known and have to be predicted. Secondly the aim of our application is not only to train one model as best as possible, but to compare different modelling approaches. For comparison the predictive modelling literature uses a plethora of metrics. Since our target variable is quantitative we apply some of the most widely used measures like the mean squares error (MSE), the mean absolute error (MAE), the bias and $R^2$. They will be introduced formally and explained in the following. MSE and MAE are both defined on the basis of a loss function. 
-\begin{align*}
-L(Y,\hat{f}(X))=(Y-\hat{f}(X))^2\;\; \text{in the case of MSE}
-\end{align*}
+\subsection{Evaluation}\label{sec:Evaluation_Theory}
+In predictive modelling assessing the predictions made by a model is a very important step in the analysis. After the model training is done the reasoning for computing performance measures on data unseen in the modeling process is twofold. First one has to be concerned with overfitting. The term overfitting expresses, that a model performs very well on the training data (in an extrem case, predicts every data point perfectly), but subsequently performs very poorly on new test data. This has to be avoided, because usually predictive models are to be used on new data for which the values of the target variable are not known and have to be predicted. Secondly the aim of our application is not only to train one model as best as possible, but to compare different modelling approaches. For comparison the predictive modelling literature uses a plethora of metrics. Since our target variable is quantitative we apply some of the most widely used measures like the mean squares error (MSE), the mean absolute error (MAE), the bias and $R^2$. They will be introduced formally and explained in the following. MSE and MAE are both defined on the basis of a loss function. 
+\begin{align}
+L_{MSE}(Y,\hat{f}(X))=(Y-\hat{f}(X))^2
+\end{align}
 \begin{center}
 or
 \end{center}
 \begin{align*}
-L(Y,\hat{f}(X))=|Y-\hat{f}(X)|\;\; \text{in the case of MAE}
+L_{MAE}(Y,\hat{f}(X))=|Y-\hat{f}(X)|
 \end{align*}
 Y are the real values and $\hat{f}(X)$ are the model predictions based on a function of additional information. For example in the case of linear regression this would be a linear combination of independent variables. MSE and MAE are defined as the expectation of the loss function over the whole distribution. In reality these quantities have to be estimated using the test data, giving:
 \begin{align}
@@ -16,11 +16,11 @@ Y are the real values and $\hat{f}(X)$ are the model predictions based on a func
 \begin{align}
 \hat{MAE}=\frac{1}{n}\sum_{i=1}^n|y_i-\hat{f}(x_i)|
 \end{align}
-,where n is the number of observations in the test set. MSE and MAE both are measures that indicate the magnitude of preditction error, but not the direction. That is because the prediction error is either squared or the absolute value is used. Additionally both metrics are scale dependent, due to the scale dependence of the prediction error. In our application that is of no concern, since we compare different models on the same data. On the contrary being on the same scale as the original data makes the MAE very easily interpretable. To get an idea of the direction of the error we also include an estimate of bias, simply by averaging over all prediction errors.
+,where $n$ is the number of observations in the test set. MSE and MAE are both measures that indicate the magnitude of the prediction error, but not the direction. That is because the prediction error is either squared or the absolute value is used. Additionally both metrics are scale dependent, due to the scale dependence of the prediction error. In our application that is of no concern, since we compare different models on the same data. On the contrary being on the same scale as the original data makes the MAE very easily interpretable. To get an idea of the direction of the error we also include an estimate of the bias, simply by averaging over all prediction errors.
 \begin{align}
 \hat{Bias}=\frac{1}{n}\sum_{i=1}^n(\hat{f}(x_i)-y_i)
 \end{align}
-The interpretation of the quantity is easy. If positive the predictions are on average too high and too low if the value is negative. As the last measure we look at $R^2$, which is very well known in the regression context. Conceptually $R^2$ is the proportion of variation in the target variable, that is explained by the predictors. The coefficient of determination as is it also called, as a proportion always ranges between zero and one. This property makes it different from the aforementioned metrics, because both boundaries have natural interpretations as perfect or worst possible fit.
+The interpretation of the quantity is easy. If positive the predictions are on average too high and if the value is negative they are too low. As the last measure we look at $R^2$, which is very well known in the regression context. Conceptually $R^2$ is the proportion of variation in the target variable, that is explained by the predictions of the model. The coefficient of determination as is it also called, as a proportion always ranges between zero and one. This property makes it different from the aforementioned metrics, because both boundaries have natural interpretations as perfect or worst possible fit.
 \begin{align}
 R^2=1-\frac{\sum_{i=1}^n(y_i-\hat{f}(x_i))}{\sum_{i=1}^n(y_i-\bar{y})}
 \end{align}  
