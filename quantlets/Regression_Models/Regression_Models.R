@@ -5,13 +5,12 @@ graphics.off()
 #install and load packages
 libraries = c("xtable", "outreg", "glmnet", "ggplot2", "ggfortify")
 lapply(libraries, function(x) if (!(x %in% installed.packages())) {
-      install.packages(x)
+    install.packages(x)
 })
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
-#read in data:
-#was machen wir hier eigentlich korrekterweise?
-setwd("C:/Users/Tammena/Documents/HousePriceRegression/quantlets/Regression_Models")
+#read in data: Please set your working directory!
+setwd("C:/Users/Tammena/Documents/SPL-HousePriceRegression/quantlets/Regression_Models")
 df    = read.csv("train_preprocessed.csv")
 #set rownumbers in dataframe to NULL
 df$X  = NULL
@@ -57,8 +56,8 @@ AIC = fwd.fit$anova$AIC
 VAR = row_number(-AIC)
 gg  = as.data.frame(cbind(VAR, AIC))
 
-pdf(file = "step.pdf", width = 8, height = 8)
-ggplot(aes(x=VAR, y = AIC), data = gg)+ geom_point()
+png(file = "step.png", width = 800, height = 800)
+ggplot(aes(x=VAR, y = AIC), data = gg)+ geom_point() + theme_classic() 
 dev.off()
 
 # 3. Ridge and Lasso
@@ -98,14 +97,14 @@ lasso = lm.penal(type = "lasso", x = x, y = y)
 ridge = lm.penal(type = "ridge", x = x, y = y)
 
 #plot the optimal lamdba for lasso
-pdf(file = "lasso_lambda.pdf", width = 8, height = 8)
-autoplot(lasso[[4]], color="red")
+png(file = "lasso_lambda.png", width = 800, height = 800)
+autoplot(lasso[[4]]) + theme_classic() + theme(panel.background = element_rect(fill='white', color="black"))
 dev.off()
 
 #plot the lasso penalty results
 lasso.plot = lm.penal(type="lasso", x = as.matrix(df[, lasso[[1]]]), y = y)
-pdf(file = "lasso.pdf", width = 12, height = 8)
-autoplot(lasso.plot[[4]]$glmnet.fit, xvar="lambda")
+png(file = "lasso.png", width = 1200, height = 800)
+autoplot(lasso.plot[[4]]$glmnet.fit, xvar="lambda") + theme_classic() 
 dev.off()
 
 #make a table for latex
@@ -120,8 +119,8 @@ table.out[,"Ridge"]     = as.character(c(as.vector(ridge[[3]]), nrow(df), ridge[
 table.out[table.out==0] = ""
 table.out               = rbind(table.out, c("", "Number Vars", length(lm.fit$coefficients),  length(fwd.fit$coefficients), length(lasso[[1]]), 
                                length(ridge[[1]])))
-table.x                 = xtable(table.out[c(1:7, 13:19, 177:181), ])
-print(table.x, type = "latex", file = "reg_table.tex", include.rownames = FALSE)
+table.x                 = xtable(table.out[c(1:7, 13:19, 177:181), ], caption = "Excerpt of Regression Model Results")
+print(table.x, type = "latex", file = "reg_table.tex",include.rownames = FALSE)
 
 #save R objects for further analysis
 lasso.fit = lasso[[4]]

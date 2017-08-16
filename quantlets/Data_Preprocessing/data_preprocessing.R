@@ -18,24 +18,24 @@ df$Id           = NULL
 
 # 1. Missings and Imputation table with the number of NAs per Variable
 na.summary = function(data) {
-      na_summary = sapply(data, function(x) sum(is.na(x)))
-      na_summary[na_summary > 0]
+    na_summary = sapply(data, function(x) sum(is.na(x)))
+    na_summary[na_summary > 0]
 }
 na.summary(df)
 
 # some NA's do have a meaning, though
 vars = c("Alley", "BsmtQual", "BsmtCond", "BsmtExposure", "BsmtFinType1", "BsmtFinType2", 
-         "FireplaceQu", "GarageType", "GarageFinish", "GarageQual", "GarageCond", "PoolQC", 
-         "Fence", "MiscFeature")
+    "FireplaceQu", "GarageType", "GarageFinish", "GarageQual", "GarageCond", "PoolQC", 
+    "Fence", "MiscFeature")
 # change NA to None
 na2none = function(data, var) {
-      levels(data[, var]) = c(levels(data[, var]), "none")
-      data[, var][is.na(data[, var])] = "none"
-      return(data[, var])
+    levels(data[, var]) = c(levels(data[, var]), "none")
+    data[, var][is.na(data[, var])] = "none"
+    return(data[, var])
 }
 
 for (i in 1:length(vars)) {
-      df[, vars[i]] = na2none(df, vars[i])
+    df[, vars[i]] = na2none(df, vars[i])
 }
 
 # Check the results of above function
@@ -46,15 +46,15 @@ na.summary(df)
 na_vars = names(na.summary(df))
 # make a function for a missingness plot with ggplot2
 miss.plot = function(x) {
-      x     %>% 
-      is.na %>% 
-      melt  %>% 
-      ggplot(data = ., aes(x = Var2, y = Var1)) 
-           + geom_raster(aes(fill = value)) 
-           + scale_fill_discrete(name = "", labels = c("Present", "Missing")) 
-           + theme_classic() 
-           + theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) 
-           + labs(x = "Variables in Dataset", y = "Rows / observations")
+    x     %>% 
+    is.na %>% 
+    melt  %>% 
+    ggplot(data = ., aes(x = Var2, y = Var1)) 
+        + geom_raster(aes(fill = value)) 
+        + scale_fill_discrete(name = "", labels = c("Present", "Missing")) 
+        + theme_classic() 
+        + theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) 
+        + labs(x = "Variables in Dataset", y = "Rows / observations")
 }
 
 png(file = "missmap.png", width = 800, height = 800)
@@ -68,9 +68,9 @@ numeric.data   = df[, names(colclasses[colclasses != "factor"])]
 
 # Impute numeric data with median
 impute.median = function(x) {
-      nas    = is.na(x)
-      x[nas] = median(x[!nas])
-      as.numeric(x)
+    nas    = is.na(x)
+    x[nas] = median(x[!nas])
+    as.numeric(x)
 }
 
 numeric.imputed = as.data.frame(sapply(numeric.data, impute.median))
@@ -78,14 +78,14 @@ numeric.imputed = as.data.frame(sapply(numeric.data, impute.median))
 # imputation for the categoric data we need a custom mode function, because R's built
 # in works only for numeric data
 Mode = function(x) {
-      ux = unique(x)
-      ux[which.max(tabulate(match(x, ux)))]
+    ux = unique(x)
+    ux[which.max(tabulate(match(x, ux)))]
 }
 
 impute.mode = function(x) {
-      nas    = is.na(x)
-      x[nas] = Mode(x[!nas])
-      as.factor(x)
+    nas    = is.na(x)
+    x[nas] = Mode(x[!nas])
+    as.factor(x)
 }
 
 categoric.imputed = as.data.frame(sapply(categoric.data, impute.mode))
@@ -100,18 +100,18 @@ anyNA(df.imputed)
 # 2. merge factorlevels that are almost empty function to set categories with less
 # than 20 observations to 'other'
 single.factors = function(data) {
-      for (var in names(data)) {
-            if (is.factor(data[[var]])) {
-                  tbl = table(data[[var]])
-                  ren = names(tbl)[tbl <= 20]
-                  # rename all matching levels to other
-                  levels(data[[var]])[levels(data[[var]]) %in% ren] = "Other"
-                  # same procedure again, if now there is still a category with less 
-                  # than 20 it can only be "other"!
-                  tbl     = table(data[[var]])
-                  tbl_sum = sum(tbl < 20)
-                  if (nlevels(data[[var]]) < 3 & tbl_sum >= 1) 
-                        data[[var]] = NA
+    for (var in names(data)) {
+        if (is.factor(data[[var]])) {
+            tbl = table(data[[var]])
+            ren = names(tbl)[tbl <= 20]
+            # rename all matching levels to other
+            levels(data[[var]])[levels(data[[var]]) %in% ren] = "Other"
+            # same procedure again, if now there is still a category with less 
+            # than 20 it can only be "other"!
+            tbl     = table(data[[var]])
+            tbl_sum = sum(tbl < 20)
+            if (nlevels(data[[var]]) < 3 & tbl_sum >= 1) 
+                data[[var]] = NA
             }
       }
       return(data)
@@ -127,9 +127,9 @@ df.temp.numeric = df.merged[, names(colclasses[colclasses != "factor"])]
 
 # Make the function to identify extreme outliers (more than 3 times IQR)
 outlier.count = function(x) {
-      low  = as.numeric(quantile(x)[2] - IQR(x) * 3)
-      high = as.numeric(IQR(x) * 3 + quantile(x)[4])
-      sum(x >= high | x <= low)
+    low  = as.numeric(quantile(x)[2] - IQR(x) * 3)
+    high = as.numeric(IQR(x) * 3 + quantile(x)[4])
+    sum(x >= high | x <= low)
 }
 
 # make a table to see the count of outliers
@@ -145,8 +145,8 @@ df.temp.numeric[names(outlier_table[outlier_table == 1460])] = NULL
 
 # function to return the number of unique values of a var
 unique.values = function(var) {
-      un = unique(var)
-      length(un)
+    un = unique(var)
+    length(un)
 }
 
 count_unique = sapply(df.temp.numeric, unique.values)
@@ -157,12 +157,12 @@ sapply(df.temp.numeric[names(less_than_10)], table)
 
 # now cut the remaining outliers to 3.0 IQR distance
 outlier.truncate = function(x) {
-      low         = as.numeric(quantile(x)[2] - IQR(x) * 3)
-      high        = as.numeric(IQR(x) * 3 + quantile(x)[4])
-      x[x < low]  = low
-      x[x > high] = high
-      print(x)
-      return(x)
+    low         = as.numeric(quantile(x)[2] - IQR(x) * 3)
+    high        = as.numeric(IQR(x) * 3 + quantile(x)[4])
+    x[x < low]  = low
+    x[x > high] = high
+    print(x)
+    return(x)
 }
 
 df.outlier.trunc = as.data.frame(sapply(df.temp.numeric, outlier.truncate))
@@ -173,8 +173,10 @@ df.plot$truncated = as.factor(c(rep(0, nrow(df.temp.numeric)), rep(1, nrow(df.ou
 gg                = melt(df.plot, id="truncated")
 
 png(file = "boxplots.png", width = 1200, height = 800)
-ggplot(data = gg, aes(x=variable, y=value)) + 
-      geom_boxplot(aes(fill=truncated)) + facet_wrap( ~ variable, scales="free") + theme_classic() 
+ggplot(data = gg, aes(x=variable, y=value)) 
++ geom_boxplot(aes(fill=truncated)) 
++ facet_wrap( ~ variable, scales="free") 
++ theme_classic() 
 dev.off()
 
 # 4. Plot the cleaned dataset make a number of histograms
@@ -203,7 +205,7 @@ summary(prin1)
 scores = prin1$scores[, 1:4]
 
 #to be able to select factor levels automatically, convert all factors into dummies
-mm             = model.matrix(~. - 1, data = df.merged[, names(colclasses[colclasses == "factor"])])
+mm = model.matrix(~. - 1, data = df.merged[, names(colclasses[colclasses == "factor"])])
 
 # make dataframe from remaining numeric vars and PCA-Results and dummy vars
 df.preprocessed = cbind(df.outlier.trunc[, !names(df.outlier.trunc) %in% rownames(list)], scores, mm)
@@ -225,4 +227,3 @@ ids = sample(df.preprocessed$Id, nrow(df.preprocessed)*0.2)
 
 write.csv(df.preprocessed[df.preprocessed$Id %in% ids,], file = "test_preprocessed.csv")
 write.csv(df.preprocessed[!df.preprocessed$Id %in% ids,], file = "train_preprocessed.csv")
-
