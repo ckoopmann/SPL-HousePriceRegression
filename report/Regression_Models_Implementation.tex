@@ -1,6 +1,6 @@
 \subsection{Regression Models}
 \subsubsection{Backward Selection}
-The \textit{sign.select} is a self implemented backward selection based on p-values. It requires a dataframe and the dependent variable. The dependent variable $y$ is regressed on the remaining variables 
+The function \textit{sign.select} is a self implemented backward selection based on p-values. It requires a dataframe and the dependent variable. The dependent variable $y$ is regressed on the remaining variables 
 in a  \textit{while}-loop, in which at each iteration the insignificant variables
 are dropped until every variable is significant. 
 The initial variable selection are all variables in the dataframe except the dependent variable. 
@@ -41,12 +41,12 @@ vars   = sign.select(df, "logSalePrice")
 lm.fit = lm(logSalePrice ~ ., data = df[, c(vars, "logSalePrice")])
 summary(lm.fit)
 \end{lstlisting}
-\subsubsection{Forward selection}
-The forward selection is based on the package \textit{step}. Firstly a minimal (\textit{none.fit}) and a maximal model (\textit{all.fit}) are defined. Starting from the minimal model, the step-algorithm selects the variable which inclusion would lead to the smallest $AIC$. Those steps are repeated, until no additional variable leads to a sufficently large increase in the $AIC$, as explained in section  \nameref{sec:reg_theory}. 
-For visualization, the $AIC$ reduction is plotted against the number of variables. For this, a dataframe with the respective number of variables and corresponding $AIC$ is created and then passed to \textit{ggplot}.
+\subsubsection{Forward Selection}
+The forward selection is based on the package \textit{step}. Firstly a minimal (\textit{none.fit}) and a maximal model (\textit{all.fit}) are defined. Starting from the minimal model, the step-algorithm selects the variable which inclusion would lead to the smallest $AIC$. Those steps are repeated, until no additional variable leads to a sufficently large decrease in the $AIC$, as explained in section  \nameref{sec:reg_theory}. 
+For visualization, the $AIC$ reduction is plotted against the number of variables. For this, a dataframe with the respective number of variables and corresponding $AIC$ is created and then passed to \textit{ggplot2}.
 
 
-\subsubsection{Ridge and Lasso}
+\subsubsection{Ridge and Lasso Regression}
 Based on the package \textit{glmnet}, the function \textit{lm.penal} is implemented  that performs either lasso or ridge regression, where the optimal penalizing term lambda is selected based on a 10 fold cross validation. \textit{lm.penal} requires an input of independent variables $x$, the dependent variable $y$ and the choice $lasso$ or $ridge$. In the function it is firstly determined if the input for type was correct and which $\alpha$ results from it. If the input is incorrect, the functions stops with an error message.
 Then the glmnet function \textit{cv.glmnet} is used to select the optimal parameter $\lambda$. To obtain fitted values for $y$,  the \textit{predict} function is used  to predict the outcome based on the $x$ variables. The corresponding $R^{2}$ is calculated.
 To make a nicely looking comparison table in later steps, a table of coefficients and variable names is created. The function returns the different results in the list \textit{output}.
@@ -81,7 +81,7 @@ ridge = lm.penal(type = "ridge", x = x, y = y)
 \end{lstlisting}
 
 
-In the subsequent code $lasso$ and $ridge$ are estimated using the \textit{lm.penal} function.  For visualization, two plots based on the lasso model are created. The first plots the results from the crossvalidation: $lambda$ versus the $Mean Squared Error$. For the second plot \textit{lm.penal} is called again, but this time only with the $x$-variables that appear in the final model from the first call. This is to avoid an (even more) overloaded plot. The created plot illustrates how lasso works, as it shows which variables have a coefficient larger than zero, based on value  the regularization takes. 
+In the subsequent code $lasso$ and $ridge$ are estimated using the \textit{lm.penal} function.  For visualization, two plots based on the lasso model are created. The first plots the results from the crossvalidation: $lambda$ versus the $Mean Squared Error$. For the second plot \textit{lm.penal} is called again, but this time only with the $x$-variables that appear in the final model from the first call. This is to avoid an (even more) overloaded plot. The created plot illustrates how lasso works, as it shows which variables have a coefficient larger than zero, based on the value  regularization takes. 
 The remainder of the code is used to make a summarizing table that is then exported to  a \textit{latex} file. The results from the four models are firstly transformed to a dataframe using the \textit{outreg} package. Since \textit{glmnet} does not provide  an object that can be interpreted by \textit{outreg}, at first a placeholder regression results based on all variables is sent to \textit{outreg}. In a second step, the dummy results are replaced by a vector that contains the actual $ridge$ and $lasso$ results as well as the manually calculated $R^{2}$.  An excerpt of the results is then stored in \textit{latex} format using the \textit{xtable} package. 
 
 Finally, the model fits are saved as objects to be used in further analysis in the quantlet "Model Comparision". 

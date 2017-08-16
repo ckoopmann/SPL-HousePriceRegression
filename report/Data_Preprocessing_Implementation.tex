@@ -1,7 +1,7 @@
 \subsection{Data Preprocessing}
 
 To  get an overview on the  the missing data the  function \textit{na.summary} returns variable names and the count of missing values for a given dataframe. 
-For those factor variables were missing actually has a meaning, the function \textit{na2none} changes the missing value to a new level to "none". The function is than applied in a small loop to each variable of an earlier defined list (\textit{vars}. 
+For those factor variables where missing actually has a meaning, the function \textit{na2none} changes the missing value to a new level  "none". The function is than applied in a small loop to each variable of an earlier defined list (\textit{vars}). 
 
 To visualize the remaining missings, a  missingnessplot  is created based on the package \textit{ggplot2}. For this, all variables with missing values are reshaped to a new dataframe that has three columns, such that for every combination of observation and variable the information is provided if there is a missing value or not. This is done conveniently with the \textit{reshape2} and \textit{dplyr} package.  
 On the x-axis the variables are plotted, on the y axis the observation as ordered in the dataframe.
