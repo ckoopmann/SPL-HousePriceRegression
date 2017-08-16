@@ -7,8 +7,8 @@ libraries = c("ggplot2", "reshape2", "dplyr")
 lapply(libraries, function(x) if (!(x %in% installed.packages())) {install.packages(x)})
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
-# was machen wir hier eigentlich korrekterweise?
-setwd("C:/Users/Tammena/Documents/HousePriceRegression/quantlets/Data_Preprocessing")
+#read in data: Please set your working directory!
+setwd("C:/Users/Tammena/Documents/SPL-HousePriceRegression/quantlets/Data_Preprocessing")
 # Read in data:
 df = read.csv("train.csv")
 #delete ID and take logs of sale price, see quantlet explanatory data analysis
@@ -41,18 +41,23 @@ for (i in 1:length(vars)) {
 # Check the results of above function
 na.summary(df)
 
-# Plot a missingness map, possible with amelia package. Again the na.summary function
+# Plot a missingness map. Again the na.summary function
 # comes in handy
 na_vars = names(na.summary(df))
 # make a function for a missingness plot with ggplot2
 miss.plot = function(x) {
-      x %>% is.na %>% melt %>% ggplot(data = ., aes(x = Var2, y = Var1)) + geom_raster(aes(fill = value)) + 
-            scale_fill_discrete(name = "", labels = c("Present", "Missing")) + theme_minimal() + 
-            theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) + labs(x = "Variables in Dataset", 
-                                                                              y = "Rows / observations")
+      x     %>% 
+      is.na %>% 
+      melt  %>% 
+      ggplot(data = ., aes(x = Var2, y = Var1)) 
+           + geom_raster(aes(fill = value)) 
+           + scale_fill_discrete(name = "", labels = c("Present", "Missing")) 
+           + theme_classic() 
+           + theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) 
+           + labs(x = "Variables in Dataset", y = "Rows / observations")
 }
 
-pdf(file = "missmap.pdf", width = 8, height = 8)
+png(file = "missmap.png", width = 800, height = 800)
 miss.plot(df[na_vars])
 dev.off()
 
@@ -101,8 +106,8 @@ single.factors = function(data) {
                   ren = names(tbl)[tbl <= 20]
                   # rename all matching levels to other
                   levels(data[[var]])[levels(data[[var]]) %in% ren] = "Other"
-                  # same procedure again, if now there is still a category with less than 20 it can only
-                  # be other!
+                  # same procedure again, if now there is still a category with less 
+                  # than 20 it can only be "other"!
                   tbl     = table(data[[var]])
                   tbl_sum = sum(tbl < 20)
                   if (nlevels(data[[var]]) < 3 & tbl_sum >= 1) 
@@ -167,16 +172,16 @@ df.plot           = rbind(df.temp.numeric[, names(outlier_table[outlier_table<14
 df.plot$truncated = as.factor(c(rep(0, nrow(df.temp.numeric)), rep(1, nrow(df.outlier.trunc))))
 gg                = melt(df.plot, id="truncated")
 
-pdf(file = "boxplots.pdf", width = 12, height = 8)
+png(file = "boxplots.png", width = 1200, height = 800)
 ggplot(data = gg, aes(x=variable, y=value)) + 
-      geom_boxplot(aes(fill=truncated)) + facet_wrap( ~ variable, scales="free")
+      geom_boxplot(aes(fill=truncated)) + facet_wrap( ~ variable, scales="free") + theme_classic() 
 dev.off()
 
 # 4. Plot the cleaned dataset make a number of histograms
 gg = melt(scale(df.outlier.trunc[, !names(df.outlier.trunc) %in% c("Id")]))
 
-pdf(file = "histograms.pdf", width = 12, height = 8)
-qplot(data = gg, x = value, facets = ~Var2, bins = 30)
+png(file = "histograms.png", width = 1200, height = 800)
+qplot(data = gg, x = value, facets = ~Var2, bins = 30) + theme_classic() 
 dev.off()
 
 # 5. Reduction of dimensionality of numeric variables only select those vars, that
@@ -189,7 +194,7 @@ cor(df.pca)
 
 # principal component analysis
 prin1 = princomp(df.pca, cor = T, scores = T)
-pdf(file = "screeplot.pdf", width = 8, height = 8)
+png(file = "screeplot.png", width = 800, height = 800)
 screeplot(prin1, type = "l")
 dev.off()
 summary(prin1)
@@ -202,6 +207,7 @@ mm             = model.matrix(~. - 1, data = df.merged[, names(colclasses[colcla
 
 # make dataframe from remaining numeric vars and PCA-Results and dummy vars
 df.preprocessed = cbind(df.outlier.trunc[, !names(df.outlier.trunc) %in% rownames(list)], scores, mm)
+
 #avoid spaces in names
 df.preprocessed        = as.data.frame(df.preprocessed)
 names(df.preprocessed) = make.names(names(df.preprocessed), unique = TRUE)

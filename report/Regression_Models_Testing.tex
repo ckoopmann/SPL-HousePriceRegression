@@ -14,6 +14,7 @@ The trace plot (\autoref{fig:Lasso1}) visualizes how the regularization in Lasso
 For Ridge, the hyperparameter is $\lambda = 1.06$, which results in in the same $R^{2}$ value. As expected (see section \nameref{sec:reg_theory}), Ridge returns the original number of variables. 
 
 \autoref{table:regs} summarizes the results of the different selection mechanisms. Apart from the above described differences in number of variables and  $R^{2}$ the table shows, that the regularized models also include variables that are not significant in the stepwise models, which means that at least in the training sample these variables appear to have some predictive power. Overall , the predictive performance is similar, but there are clear differences in the number of variables, and which variables are considered important. 
+\FloatBarrier
 \begin{figure}[H]
   \centering
 \includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/step\string".pdf}
@@ -31,6 +32,10 @@ For Ridge, the hyperparameter is $\lambda = 1.06$, which results in in the same 
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Regression_Models/Lasso\string".pdf}
   \caption{Illustration of variable selection for Lasso based on the regularization term}\label{fig:Lasso1}
 \end{figure}
+
+ 
+\input{\string"../quantlets/Regression_Models/reg_table\string".tex}
+ 
 
  
 \FloatBarrier
