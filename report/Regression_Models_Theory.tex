@@ -11,7 +11,7 @@ The second implemented model is forward selection based on the AIC (Akaike Infor
 ${\displaystyle \mathrm{AIC}=2k-2\ln({\hat{L}})}$, where $\hat{L}$ is the likelihood of a given model. The stepwise algorithm keeps adding variables until there is no further decrease in the AIC possible. This situation occurs, when the penalty term $2k$ exceeds the difference in likelihood resulting from the inclusion of further variables. 
 
 \subsubsection{Ridge and Lasso Regression}
-Ridge and Lasso regressions omit the assumption of an unbiased estimator. Both models include a penalizing term for the regressors, and therefore minimize the penalized sum of squares.  Written in a Lagrange - Multiplier form it is easy to see, that the only difference between both estimators is the $L^{p}$-norm: Ridge relies on an $L^{2}$-norm, while Lasso uses an  $L^{1}$-norm (\cite{friedman_elements_2001}).  
+Ridge and Lasso regressions omit the assumption of an unbiased estimator. Both models include a penalizing term for the regressors, and therefore minimize the penalized sum of squares.  Written in a Lagrange - Multiplier form it is easy to see, that the only difference between both estimators is the $L^{p}$-norm: Ridge relies on an $L^{2}$-norm, while Lasso uses an  $L^{1}$-norm (\cite{friedman_elements_2001}, pp. 69ff).  
 
 \begin{equation}
 hat{\beta_{lasso}}=argmin\{\frac{1}{2}\sum_{t=1}^{N}(y_{t}-\beta_{0}-\sum_{j=1}^{p}x_{ij}\beta_{j})^{2}+\lambda\sum_{j=1}^{p}|\beta_{j}|\}

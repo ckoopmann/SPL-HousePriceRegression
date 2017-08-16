@@ -9,7 +9,7 @@ In Figure  \ref{fig:tree} we have plotted an example of a single regression tree
 \begin{figure}
   \centering
 \includegraphics[width=0.8\textwidth,keepaspectratio]{\string"../quantlets/Random_Forest/tree\string".pdf}
-  \caption{Sample Regression Tree predicting log Sale Price}\label{fig:tree}
+  \caption{Example Regression Tree predicting log SalePrice}\label{fig:tree}
 \end{figure}
 
 One advantage of this method is its ability to very easily incorporate both numeric as well as non-numeric variables into the model. This is possible since we can define binary tests on all kinds of variables. Another advantage is the computational efficiency when predicting the value for a new observations. However in our context maybe the most interesting feature of this method is the fact that, with sufficient depth of the tree it can approximate arbitrarily complex functions and is in no way limited to linear relationships. While the prediction of new cases using a regression tree is relatively straightforward it is not immediately clear how one might go about finding a good tree, since the loss function is not as easily differentiable as that of a linear model. A regression tree is usually iteratively grown using the following procedure.
@@ -25,7 +25,7 @@ One advantage of this method is its ability to very easily incorporate both nume
 \end{enumerate}
 The remaining challenge is to define suitable objective functions and stopping criteria. In the case of the regression tree one usually chooses the sum of squared errors across all nodes as objective function. With $n_l$ the number of all leaves at the current split and $L_i$ the index set of the i-th leaf and $m_i$ the mean at that leaf, we can write this as:
 \begin{align}
-S = \sum_{i = 1}^{n_l} \sum_{j \in L_i} (y_j - m_i)^2 \\label{eq:obj1}
+S = \sum_{i = 1}^{n_l} \sum_{j \in L_i} (y_j - m_i)^2 \label{eq:obj1}
 \end{align}
 With $n_i$ the number of observations in the i-th leaf and $V_i$ the variance within that leaf we can rewrite equation \ref{eq:obj1} as:
 \begin{align}
