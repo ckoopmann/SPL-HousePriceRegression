@@ -51,8 +51,8 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
         
         for (i in 1:(n - 1)) {
             for (j in (i + 1):n) {
-                tmp = cor.test(corr.data[, i], corr.data[, j])            # testing correlation
-                p.value.matrix[i, j] = p.value.matrix[j, i] = tmp$p.value # filling p-value matrix with respective p-values
+                tmp                  = cor.test(corr.data[, i], corr.data[, j]) # testing correlation
+                p.value.matrix[i, j] = p.value.matrix[j, i] = tmp$p.value       # filling p-value matrix with respective p-values
             }
             colnames(p.value.matrix) = rownames(p.value.matrix) = colnames(corr.numeric.adjusted)
         }
@@ -97,11 +97,11 @@ corr.barplot = function(numb.corr) {
         }
         
         # setting up the results for plotting
-        y.plotting = correlations[order(abs(correlations), decreasing = TRUE)][1:numb.corr]
-        x.plotting = names(y.plotting)
+        y.plotting        = correlations[order(abs(correlations), decreasing = TRUE)][1:numb.corr]
+        x.plotting        = names(y.plotting)
         names(y.plotting) = NULL
-        df = data.frame(x.plotting, y.plotting)
-        df$x.plotting = factor(df$x.plotting, levels = df[order(abs(df$y.plotting), decreasing = TRUE), "x.plotting"])
+        df                = data.frame(x.plotting, y.plotting)
+        df$x.plotting     = factor(df$x.plotting, levels = df[order(abs(df$y.plotting), decreasing = TRUE), "x.plotting"])
         
         ggplot(data = df, aes(x.plotting, y.plotting), fill = as.factor(x.plotting)) + geom_bar(stat = "identity", color = "black", fill = "black") + 
             theme(panel.background = element_rect(fill = "white", colour = "black"),axis.title.x = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, size = 12)) + 

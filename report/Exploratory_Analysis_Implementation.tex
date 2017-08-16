@@ -88,7 +88,7 @@ writeLines(all.latex, con = "numeric_overview.tex")
 
 
 \subsubsection{Exploratory Data Analysis Dependence}
-After investigating each variable on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea of how to use the available data in the models one is aiming for. For this project we implemented three functions. One creates a correlation plot, showing how strongly the numeric variables correlate with each other. The second function examines the relationship between the target variable \textit{SalePrice}. The third function creates boxplots of  the target variable for different levels of the categoric variables. 
+After investigating each variable on its own, it is very important to explore the dependency structure in the dataset. This is done in order to get an idea of how to use the available data in the models one is aiming for. For this project we implement three functions. One creates a correlation plot, showing how strongly the numeric variables correlate with each other. The second function examines the relationship only between the target variable \textit{SalePrice}and the other quantitative variables. The third function creates boxplots of  the target variable for different levels of the categoric variables. 
 
 The first function is called \textit{corr.func} and produces a correlation  plot giving the user some options on what the function output should contain.
 \begin{lstlisting}[language=R]
