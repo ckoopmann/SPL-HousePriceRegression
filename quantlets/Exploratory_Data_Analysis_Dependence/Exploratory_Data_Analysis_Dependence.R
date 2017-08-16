@@ -10,8 +10,6 @@ lapply(libraries, function(x) if (!(x %in% installed.packages())) {
 
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
-# setting up working directory
-setwd("C:/Users/Felix/Uni/Programming/SPL-HousePriceRegression/quantlets/Exploratory_Data_Analysis_Dependence")
 
 # Read in training Data:
 data = read.csv("train.csv")
@@ -26,7 +24,6 @@ categoric.data = data[, names(colclasses[colclasses == "factor"])]
 # Drop Id Variable since it is unnecessary here
 numeric.data$Id = NULL
 
-############################################################################
 
 # Part1: 
 # Analysing correlations for numeric variables
@@ -80,7 +77,6 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
 
 corr.func(numeric.data, cut.value = 0.3, corr.mat = FALSE, corr.test = TRUE)
 
-###################################################################################
 
 
 # Part 2:
@@ -123,7 +119,6 @@ pdf(file = path.barplot)
 corr.barplot(20)
 dev.off()
 
-############################################################################
 
 
 # Part 3: 
@@ -136,9 +131,9 @@ boxplot.target = function(categoric) {
         return("The input variable has to be categorical. Numeric input does not work!")
     } else {
         # datapreparation for boxplots
-        categoric.x = data[, categoric]
-        plot.data = as.data.frame(cbind(data$SalePrice, categoric.x))
-        plot.data[[2]] = as.factor(plot.data[[2]])
+        categoric.x            = data[, categoric]
+        plot.data              = as.data.frame(cbind(data$SalePrice, categoric.x))
+        plot.data[[2]]         = as.factor(plot.data[[2]])
         levels(plot.data[[2]]) = levels(categoric.x)
         
         # creating the boxplot

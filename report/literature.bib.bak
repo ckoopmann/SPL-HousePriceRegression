@@ -1,0 +1,67 @@
+
+@article{friedman_stochastic_2002,
+	title = {Stochastic gradient boosting},
+	volume = {38},
+	url = {http://www.sciencedirect.com/science/article/pii/S0167947301000652},
+	number = {4},
+	urldate = {2017-08-14},
+	journal = {Computational Statistics \& Data Analysis},
+	author = {Friedman, Jerome H.},
+	year = {2002},
+	pages = {367--378},
+	file = {[PDF] temple.edu:/Users/Christian/Library/Application Support/Zotero/Profiles/qmv4selu.default/zotero/storage/QHNRC9J8/Friedman - 2002 - Stochastic gradient boosting.pdf:application/pdf}
+}
+
+@article{friedman_greedy_2001,
+	title = {Greedy function approximation: a gradient boosting machine},
+	shorttitle = {Greedy function approximation},
+	url = {http://www.jstor.org/stable/2699986},
+	urldate = {2017-08-14},
+	journal = {Annals of statistics},
+	author = {Friedman, Jerome H.},
+	year = {2001},
+	pages = {1189--1232}
+}
+
+@book{friedman_elements_2001,
+	title = {The elements of statistical learning},
+	volume = {1},
+	url = {http://statweb.stanford.edu/~tibs/book/preface.ps},
+	urldate = {2017-08-14},
+	publisher = {Springer series in statistics New York},
+	author = {Friedman, Jerome and Hastie, Trevor and Tibshirani, Robert},
+	year = {2001}
+}
+
+@article{liaw_classification_2002,
+	title = {Classification and regression by {randomForest}},
+	volume = {2},
+	url = {https://www.researchgate.net/profile/Andy_Liaw/publication/228451484_Classification_and_Regression_by_RandomForest/links/53fb24cc0cf20a45497047ab/Classification-and-Regression-by-RandomForest.pdf},
+	number = {3},
+	urldate = {2017-08-14},
+	journal = {R news},
+	author = {Liaw, Andy and Wiener, Matthew and {others}},
+	year = {2002},
+	pages = {18--22},
+	file = {[PDF] researchgate.net:/Users/Christian/Library/Application Support/Zotero/Profiles/qmv4selu.default/zotero/storage/A5G2BDST/Liaw et al. - 2002 - Classification and regression by randomForest.pdf:application/pdf}
+}
+
+@article{breiman_random_2001,
+	title = {Random forests},
+	volume = {45},
+	url = {http://www.springerlink.com/index/U0P06167N6173512.pdf},
+	number = {1},
+	urldate = {2017-08-14},
+	journal = {Machine learning},
+	author = {Breiman, Leo},
+	year = {2001},
+	pages = {5--32}
+}
+
+@book{wooldridge_introductory_2015,
+	title = {Introductory econometrics: {A} modern approach},
+	shorttitle = {Introductory econometrics},
+	publisher = {Nelson Education},
+	author = {Wooldridge, Jeffrey M.},
+	year = {2015}
+}

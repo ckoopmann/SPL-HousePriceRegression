@@ -1,6 +1,6 @@
 \subsection{Gradient Boosting Machines}
 A second alternative to the linear models that we tested is the Gradient Boosting Machine. The implementation of this model in R is very similar to that of the Random Forest. Again we use the \textit{caret} package to tune the model using the same Cross Validation as in the tuning of the Random Forest. Therefore the only two differences in the call to the \textit{train} function lie in specifying "gbm" as the \textit{method} parameter and choosing a different tuning grid. In this case we have to specify values for the four tuning parameters \textit{n.trees, shrinkage, n.minobsinnode, interaction.depth}. While we fix the latter two to just one level we specify three different values for \textit{n.trees} and 15 values for \textit{shrinkage} producing a grid of 45 parameter combinations.
-Again we parralelise the computation to speed up the tuning process on parallel processors.
+Again we parallelise the computation to speed up the tuning process on parallel processors.
 
 \begin{lstlisting}[language=R]
 # Tuning Paramter Values for Gradient Boosting Machine

@@ -10,16 +10,14 @@ lapply(libraries, function(x) if (!(x %in% installed.packages())) {
 
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
-# setting up working directory
-setwd("C:/Users/Felix/Uni/Programming/SPL-HousePriceRegression/quantlets/Model_Comparison")
 
 # Read in pre-processed Data:
 train = read.csv("train_preprocessed.csv")
 test  = read.csv("test_preprocessed.csv")
 
 # Read in trained models
-load("rf.RData")  # random forest
-load("gbm.RData")  # gradient boosting model
+load("rf.RData")                     # random forest
+load("gbm.RData")                    # gradient boosting machine
 load("regression_models_fit.RData")  # OLS based models
 
 
@@ -100,7 +98,7 @@ comparisonRSQ.list          = sapply(model.list, FUN = model.Rsq)
 comparison.result           = matrix(c(round(comparisonMSE.list, 3), round(comparisonMSEtrain.list, 3), round(comparisonMAE.list, 3), 
     round(comparisonBIAS.list, 3), round(comparisonRSQ.list, 3)), ncol = length(model.list), byrow = TRUE)
 rownames(comparison.result) = c("MSE", "MSEtrain", "MAE", "BIAS", "RSQ")
-colnames(comparison.result) = c("lm", "fwd", "lasso", "ridge", "gbm", "rf")
+colnames(comparison.result) = c("bwd", "fwd", "lasso", "ridge", "gbm", "rf")
 comparison.result
 
 # Writing a latex table containing the model comparison results
@@ -111,7 +109,7 @@ print(modelcomparison_latex, file = "modelcomparison.tex", table.placement = "H"
 # Plotting the estimations against the real values in the test dataset
 
 # Making predictions for every model on the test data
-predictions.lm    = predict(lm.fit, newdata = test)                        
+predictions.bwd   = predict(lm.fit, newdata = test)                        
 predictions.fwd   = predict(fwd.fit, newdata = test)
 predictions.lasso = predict(lasso.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
 predictions.ridge = predict(ridge.fit, newx = as.matrix(test[!names(test) %in% "logSalePrice"]), s = "lambda.1se")
@@ -119,8 +117,8 @@ predictions.gbm   = predict(gbmtuned, newdata = test)
 predictions.rf    = predict(rftuned, newdata = test)
 
 # Running an OLS regression of predicted on real values for the plots
-predicted.values           = data.frame(cbind(predictions.lm,predictions.fwd,predictions.lasso,predictions.ridge,predictions.gbm,predictions.rf))
-colnames(predicted.values) = c("predictions.lm","predictions.fwd","predictions.lasso","predictions.ridge","predictions.rf","predictions.gbm")
+predicted.values           = data.frame(cbind(predictions.bwd,predictions.fwd,predictions.lasso,predictions.ridge,predictions.gbm,predictions.rf))
+colnames(predicted.values) = c("predictions.bwd","predictions.fwd","predictions.lasso","predictions.ridge","predictions.rf","predictions.gbm")
 coeff.lm                   = vector("list", ncol(predicted.values)) # preparing an empty list for coefficients of regression
 
 # Looping through all the predictions of the different models
@@ -132,52 +130,52 @@ for (i in 1:ncol(predicted.values)){
 
 
 # plot real values against estimated values lm.fit plot
-df.lm.fit      = data.frame(cbind(test$logSalePrice, predictions.lm ))  # creating dataframe containing real and predicted outcome
+df.bwd.fit  = data.frame(cbind(test$logSalePrice, predictions.bwd ))  # creating dataframe containing real and predicted outcome
 
-lm.plot = ggplot(df.lm.fit, aes(V1, predictions.lm)) + geom_point() + geom_segment(x = -4, 
+bwd.plot    = ggplot(df.bwd.fit, aes(V1, predictions.bwd)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Backward selection linear model", 
-    x = "logSalePrice", y = "lm.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[1]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + annotate("text", 
+    x = "logSalePrice", y = "bwd.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[1]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + annotate("text", 
     label = paste("slope:", round(coeff.lm[[1]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue") + theme_classic(base_size = 20) 
 
 
 # fwd.fit plot
-df.fwd.fit      = data.frame(cbind(test$logSalePrice, predictions.fwd))
+df.fwd.fit  = data.frame(cbind(test$logSalePrice, predictions.fwd))
 
-fwd.plot = ggplot(df.fwd.fit, aes(V1, predictions.fwd)) + geom_point() + geom_segment(x = -4, 
+fwd.plot    = ggplot(df.fwd.fit, aes(V1, predictions.fwd)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Forward selection linear model", 
     x = "logSalePrice", y = "fwd.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[2]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[2]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
 
 
 # lasso.fit plot
-df.lasso.fit      = data.frame(cbind(test$logSalePrice, predictions.lasso))
+df.lasso.fit = data.frame(cbind(test$logSalePrice, predictions.lasso))
 
-lasso.plot = ggplot(df.lasso.fit, aes(V1, predictions.lasso)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
+lasso.plot   = ggplot(df.lasso.fit, aes(V1, predictions.lasso)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Lasso regression model", 
     x = "logSalePrice", y = "lasso.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[3]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[3]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
 
 
 # ridge.fit plot
-df.ridge.fit     = data.frame(cbind(test$logSalePrice, predictions.ridge))
+df.ridge.fit  = data.frame(cbind(test$logSalePrice, predictions.ridge))
 
-ridge.plot = ggplot(df.ridge.fit, aes(V1, predictions.ridge)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
+ridge.plot    = ggplot(df.ridge.fit, aes(V1, predictions.ridge)) + geom_point() + geom_segment(x = -4, y = -4, xend = 4, yend = 4, color = "red", 
     size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Ridge regression model", 
     x = "logSalePrice", y = "ridge.fit predictions") + annotate("text", label = paste("int:", round(coeff.lm[[4]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[4]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
 
 
 # gbm plot
-df.gbm          = data.frame(cbind(test$logSalePrice, predictions.gbm))
+df.gbm    = data.frame(cbind(test$logSalePrice, predictions.gbm))
 
-gbm.plot = ggplot(df.gbm, aes(V1, predictions.gbm)) + geom_point() + geom_segment(x = -4, 
+gbm.plot  = ggplot(df.gbm, aes(V1, predictions.gbm)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Generalized boosted regression model", 
     x = "logSalePrice", y = "gbmtuned predictions") + annotate("text", label = paste("int:", round(coeff.lm[[5]][1],4), sep = " "), x = -3, y = 3, size =10, color = "blue") + 
     annotate("text", label = paste("slope:", round(coeff.lm[[5]][2],4), sep = " "), x = -3, y = 2.5, size =10, color = "blue")  + theme_classic(base_size = 20)
 
 
 # rf plot
-df.rf          = data.frame(cbind(test$logSalePrice, predictions.rf))
+df.rf   = data.frame(cbind(test$logSalePrice, predictions.rf))
 
 rf.plot = ggplot(df.rf, aes(V1, predictions.rf)) + geom_point() + geom_segment(x = -4, 
     y = -4, xend = 4, yend = 4, color = "red", size = 1.3) + stat_smooth(method = "lm", se = FALSE) + labs(title = "Random forest", 
@@ -187,7 +185,7 @@ rf.plot = ggplot(df.rf, aes(V1, predictions.rf)) + geom_point() + geom_segment(x
 
 # plotting resulting graphs together for compactness
 
-plot.list = list(lm.plot, fwd.plot, lasso.plot, ridge.plot, gbm.plot, rf.plot) # list of all graphs
+plot.list = list(bwd.plot, fwd.plot, lasso.plot, ridge.plot, gbm.plot, rf.plot) # list of all graphs
 plot.loop = seq(length(plot.list))
 plot.loop = plot.loop[seq(length(plot.list)) %% 2 != 0]
 
@@ -199,7 +197,7 @@ for (i in plot.loop) {                                                         #
 dev.off()
 
 # plotting resulting graphs individually 
-names.plotting = c("lm_fit", "fwd_fit", "lasso_fit", "ridge_fit", "gbmtuned","rftuned")
+names.plotting = c("bwd_fit", "fwd_fit", "lasso_fit", "ridge_fit", "gbmtuned","rftuned")
 for (i in 1:length(names.plotting)){
   pdf(paste(names.plotting[i],".pdf",sep=""), height = 8.27, width = 11.69)
   plot(plot.list[[i]])
