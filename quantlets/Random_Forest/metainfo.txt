@@ -14,4 +14,4 @@ See also:
 Submitted:  28.06.2017
 
 Input: 'train_preprocessed.csv'
-Output: gbm.RData, gbmresults.tex, gbm_rmse.pdf, gbm_rsq.pdf, rf.RData, rfresults.tex, rf_imp.pdf, rf_rmse.pdf, rf_rsq.pdf
+Output: gbm.RData, gbmresults.tex, gbm_rmse.png, gbm_rsq.png, rf.RData, rfresults.tex, rf_imp.png, rf_rmse.png, rf_rsq.png

@@ -15,26 +15,26 @@ price.hist = ggplot(data, aes(x = SalePrice)) + geom_histogram(aes(y = ..density
     colour = "black", fill = "white") + geom_density(alpha = 0.2, fill = "#FF6666") + ggtitle("Distribution of Sale Price vs. Normal Distribution") + 
     xlab("Sale Price") + stat_function(fun = dnorm, args = list(mean = mean(data$SalePrice, 
     na.rm = TRUE), sd = sd(data$SalePrice, na.rm = TRUE)), col = "blue", size = 2) + theme_classic()
-ggsave(filename = "PriceHist.pdf")
+ggsave(filename = "PriceHist.png")
 # Histogram and QQ Plot of Log Prices
 logprice.hist = ggplot(data, aes(x = log(SalePrice))) + geom_histogram(aes(y = ..density..), 
     bins = 20, colour = "black", fill = "white") + geom_density(alpha = 0.2, fill = "#FF6666") + 
     ggtitle("Distribution of  Log Sale Price vs. Normal Distribution") + xlab("Log Sale Price") + 
     stat_function(fun = dnorm, args = list(mean = mean(log(data$SalePrice), na.rm = TRUE), sd = sd(log(data$SalePrice), 
         na.rm = TRUE)), col = "blue", size = 2)  + theme_classic()
-ggsave(filename = "LogPriceHist.pdf")
+ggsave(filename = "LogPriceHist.png")
 
 # Standardised Log Prices
 stdprice.hist = ggplot(data, aes(x = (log(SalePrice) - mean(log(SalePrice), na.rm = TRUE))/sd(log(SalePrice), 
     na.rm = TRUE))) + geom_histogram(aes(y = ..density..), bins = 20, colour = "black", fill = "white") + 
     geom_density(alpha = 0.2, fill = "#FF6666") + ggtitle("Distribution of Standardised Log Sale Price vs. Normal Distribution") + 
     xlab("Standardised Log Sale Price") + stat_function(fun = dnorm, col = "blue", size = 2) + theme_classic()
-ggsave(filename = "StdPriceHist.pdf")
+ggsave(filename = "StdPriceHist.png")
 
 stdprice.qq = ggplot(data, aes(sample = (log(SalePrice) - mean(log(SalePrice), na.rm = TRUE))/sd(log(SalePrice), 
     na.rm = TRUE))) + stat_qq() + geom_abline(slope = 1, intercept = 0, col = "red") + ggtitle("QQ-Plot of Standardised Log Sale Price") + 
     xlab("Standardised Log Sale Price")  + theme_classic()
-ggsave(filename = "StdPriceQQ.pdf")
+ggsave(filename = "StdPriceQQ.png")
 
 # Get Column Classes:
 colclasses = sapply(data, class)
