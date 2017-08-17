@@ -13,4 +13,4 @@ Submitted:  18.08.2017
 
 Input: train.csv
 
-Output: train_preprocessed.csv, missmap.pdf, screeplot.pdf, histograms.pdf
+Output: train_preprocessed.csv, missmap.png, screeplot.png, histograms.png

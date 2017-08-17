@@ -13,4 +13,4 @@ Submitted:  18.08.2017
 
 Input: 'train_preprocessed.csv'
 
-Output: step.pdf,  lasso.pdf, lasso_lambda.pdf, reg_table.tex, regression_models_fit.RData
+Output: step.png,  lasso.png, lasso_lambda.png, reg_table.tex, regression_models_fit.RData
