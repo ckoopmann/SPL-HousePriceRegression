@@ -26,6 +26,7 @@ rf                                  = randomForest(logSalePrice ~ ., data = df)
 importance                          = rf$importance[order(rf$importance, decreasing = TRUE), , drop = FALSE]
 importance.normalized               = data.frame(variable = rownames(importance), Normalized_Importance = importance/importance[1])
 names(importance.normalized)[2]     = "Normalized_Importance"
+rownames(importance.normalized)     = NULL
 # Plot Variable Importance
 importance.plot = ggplot(data = importance.normalized[1:10, ], aes(x = variable, y = Normalized_Importance)) + geom_col() + 
     scale_x_discrete(limits = importance.normalized[1:10, ]$variable) + theme_classic() +  ggtitle("Random Forest Variable Importance Top 10") + 
