@@ -8,8 +8,6 @@ lapply(libraries, function(x) if (!(x %in% installed.packages())) {install.packa
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
 #read in data: Please set your working directory!
-setwd("C:/Users/Tammena/Documents/SPL-HousePriceRegression/quantlets/Data_Preprocessing")
-# Read in data:
 df = read.csv("train.csv")
 #delete ID and take logs of sale price, see quantlet explanatory data analysis
 df$logSalePrice = log(df$SalePrice)
