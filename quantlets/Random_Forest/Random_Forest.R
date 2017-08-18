@@ -1,5 +1,4 @@
-      # rm(list = ls())
-#setwd('quantlets/Random_Forest')
+setwd('C:/Users/KoopmaCK/Documents/SPL-HousePriceRegression/quantlets/Random_Forest')
 # Cross Validation Parameter
 ptrain      = 0.85
 nfolds      = 5
@@ -25,13 +24,14 @@ df$Id = NULL
 # Simple Random Forest Model without parameter tuning for variable importance
 rf                                  = randomForest(logSalePrice ~ ., data = df)
 importance                          = rf$importance[order(rf$importance, decreasing = TRUE), , drop = FALSE]
-importance.normalized               = as.data.frame(importance/importance[1])
-names(importance.normalized)[1]     = "Normalized_Importance"
+importance.normalized               = data.frame(variable = rownames(importance), Normalized_Importance = importance/importance[1])
+names(importance.normalized)[2]     = "Normalized_Importance"
+rownames(importance.normalized)     = NULL
 # Plot Variable Importance
 importance.plot = ggplot(data = importance.normalized[1:10, ], aes(x = variable, y = Normalized_Importance)) + geom_col() + 
     scale_x_discrete(limits = importance.normalized[1:10, ]$variable) + theme_classic() +  ggtitle("Random Forest Variable Importance Top 10") + 
     xlab("Variable") + ylab("Normalized Variable Importance")
-ggsave(importance.plot, filename = "rf_imp.pdf", width = 20, height = 10, units = 'cm')
+ggsave(importance.plot, filename = "rf_imp.png", width = 20, height = 10, units = 'cm')
 # Export Variable Importance as Latex Table
 rows.per.table = 30
 row.indices = seq(from = 1, to = nrow(importance.normalized), by = rows.per.table)
@@ -76,11 +76,11 @@ print(rfresults_latex, file = "rfresults.tex")
 # Plot RMSE vs mtry
 rfrmse = ggplot(data = rfresults, aes(x = mtry, y = RMSE)) + geom_line() + theme_classic() +  ggtitle("Root Mean Squared Error vs. Tuning Parameter mtry") + 
     xlab("mtry") + ylab("RMSE")
-ggsave(rfrmse, filename = "rf_rmse.pdf", width = 20, height = 10, units = 'cm')
+ggsave(rfrmse, filename = "rf_rmse.png", width = 20, height = 10, units = 'cm')
 # Plot RSquared vs mtry
 rfrsq = ggplot(data = rfresults, aes(x = mtry, y = Rsquared)) + geom_line() + theme_classic() +  ggtitle("R Squared vs. Tuning Parameter mtry") + 
     xlab("mtry") + ylab("R Squared")
-ggsave(rfrsq, filename = "rf_rsq.pdf", width = 20, height = 10, units = 'cm')
+ggsave(rfrsq, filename = "rf_rsq.png", width = 20, height = 10, units = 'cm')
 # Tune Gradient Boosting Machine Create Tuning Grid
 gbmGrid     = expand.grid(n.trees = ntrees.tuning, interaction.depth = intdepth.tuning, shrinkage = shrinkage.tuning, n.minobsinnode = minobs.tuning)
 # Start Cluster to paralellize
@@ -101,13 +101,13 @@ print(gbmresults_latex, file = "gbmresults.tex")
 # Plot RMSE vs. shrinkage for each value of n.trees
 gbmrmse = ggplot(data = gbmresults, aes(x = shrinkage, y = RMSE, colour = n.trees)) + geom_line() + theme_classic() +  ggtitle("Root Mean Squared Error vs. Tuning Parameter Shrinkage") + 
     xlab("Shrinkage") + ylab("RMSE")
-ggsave(gbmrmse, filename = "gbm_rmse.pdf", width = 20, height = 10, units = 'cm')
+ggsave(gbmrmse, filename = "gbm_rmse.png", width = 20, height = 10, units = 'cm')
 # Plot RSquared vs. shrinkage for each value of n.trees
 gbmrsq = ggplot(data = gbmresults, aes(x = shrinkage, y = Rsquared, col = n.trees)) + geom_line() + theme_classic() +  ggtitle("R Squared vs. Tuning Parameter Shrinkage") + 
     xlab("Shrinkage") + ylab("R Squared")
-ggsave(gbmrsq, filename = "gbm_rsq.pdf", width = 20, height = 10, units = 'cm')
+ggsave(gbmrsq, filename = "gbm_rsq.png", width = 20, height = 10, units = 'cm')
 #Visualise single regression tree for illustration in Report
 tree = rpart(logSalePrice ~ ., data = df)
-pdf(file = "tree.pdf", width = 7, height = 7)
+pdf(file = "tree.png", width = 7, height = 7)
 rpart.plot(tree, compress = TRUE)
 dev.off()
