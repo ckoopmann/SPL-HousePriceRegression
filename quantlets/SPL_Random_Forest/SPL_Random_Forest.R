@@ -1,4 +1,3 @@
-setwd('C:/Users/KoopmaCK/Documents/SPL-HousePriceRegression/quantlets/Random_Forest')
 # Cross Validation Parameter
 ptrain      = 0.85
 nfolds      = 5

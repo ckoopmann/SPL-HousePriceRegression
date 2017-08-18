@@ -71,7 +71,6 @@ categoric.overview = data.frame(NACount = colSums(sapply(categoric.data, is.na))
     FUN = getlevelcount), Mode = sapply(categoric.data, FUN = getmode), ModeFrequency = sapply(categoric.data, 
     FUN = getmodefreq))
 categoric.overview_latex = xtable(categoric.overview)
-print(categoric.overview_latex, file = "categoric.overview.tex")
 
 # Export Categorical Overview as Latex Table
 rows.per.table = 30
