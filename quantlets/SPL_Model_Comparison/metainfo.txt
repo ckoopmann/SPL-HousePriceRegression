@@ -1,5 +1,5 @@
 ﻿
-Name of Quantlet: Model_Comparison
+Name of Quantlet: SPL_Model_Comparison
 
 Published in: 'Statistical programming languages - Student Project on "House Prices: Advanced Regression Techniques" '
 
