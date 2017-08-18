@@ -3,7 +3,7 @@ After tuning and training all our models it is important to test their performan
 Both have an upwards movement in MSE when going from training to test data. This is most noticeable for the random forest, which has the lowest MSE in the training data by far and is just slightly below Lasso and Ridge regression in the test data. In comparison the GBM only has a smaller uptick, which is very often the case when testing a model on real data. The other models though all show better results on the test data than on the training data. This might be a case of a "lucky sample" chosen by random as a test set. With regards to $R^2$ one can see very high values for all models confirming the ordering pointed out by the other measures.
 
 
-\input{\string"../quantlets/Model_Comparison/modelcomparison\string".tex}
+\input{\string"../quantlets/SPL_Model_Comparison/modelcomparison\string".tex}
 
 
 Besides the numbers presented in Table \ref{tab:measures} we give a graphical representation of our results. Every model is depicted in a scatterplot of the real \textit{logSalePrice} in the test dataset on the y-axis and the predicted values on the x-axis. Furthermore two lines are drawn. The red line indicates perfect prediction accuracy as mentioned in Section \ref{sec:Evaluation_Implementation} . If all the points of the cloud were on this line every price would be predicted with the correct value. That is of course unrealistic in practice, wherefore the points should be grouped as closely around the line as possible to have a good prediction result. The second blue line stems from a linear regression of the real data on the predictions. The reasoning behind this, is that the intercept and slope of the regression should be the same as those of the red line (i.e. intercept = 0, slope = 1) if the model predicts well. A general observation, which can be drawn from the graphs is that all models seem to overestimate in the lower ranges of \textit{logSalePrice} (points mostly below the red line) and underestimate in the higher ranges (points mostly above the red line; most notibly for Lasso, Ridge and Random Forest models). This is confirmed by the slopes of the blue lines, since all of them are bigger than the ideal slope of one. Overall the graphs support the results presented in Table \ref{tab:measures}. For example looking at Figure \ref{fig:Lasso} and Figure \ref{fig:Ridge}, the point clouds are less tightly grouped around the red line, than in the other scatterplots. They also contain the regression slopes  which differ the most from the ideal value of one. For the models with better results in the table, we see the opposite. Their slopes come very close to one e.g. for the forward selection model, where the slope is 1.004. With the analysis both numerical and graphical the linear forward and backward selection models perform very well in contrast to Lasso and Ridge regression models. GBM also predicts well, but has  a much lower value for the MSE on the training data, which gives rise to suspicions of overfitting.  
@@ -13,42 +13,42 @@ Besides the numbers presented in Table \ref{tab:measures} we give a graphical re
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Model_Comparison/bwd_fit\string".png}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/SPL_Model_Comparison/bwd_fit\string".png}
   	\caption{Scatterplot of linear model predictions and test data}
   	\label{fig:lm}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/fwd_fit\string".png}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/SPL_Model_Comparison/fwd_fit\string".png}
   	\caption{Scatterplot of forward model predictions and test data}
   	\label{fig:fwd}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Lasso_fit\string".png}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/SPL_Model_Comparison/Lasso_fit\string".png}
   	\caption{Scatterplot of Lasso model predictions and test data}
   	\label{fig:Lasso}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Ridge_fit\string".png}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/SPL_Model_Comparison/Ridge_fit\string".png}
   	\caption{Scatterplot of Ridge model predictions and test data}
   	\label{fig:Ridge}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/gbmtuned\string".png}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/SPL_Model_Comparison/gbmtuned\string".png}
   	\caption{Scatterplot of GBM model predictions and test data}
   	\label{fig:gbm}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/rftuned\string".png}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/SPL_Model_Comparison/rftuned\string".png}
   	\caption{Scatterplot of Random Forest model predictions and test data}
   	\label{fig:rf}
 \end{figure}
