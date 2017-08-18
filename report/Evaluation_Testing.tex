@@ -1,6 +1,6 @@
 \subsection{Evaluation}
-After tuning and training all our models it is important to test their performance on "unseen" data, which is not included in the training of the models. For this purpose we hold back our test dataset on which we evaluate our models with different metrics namely the Mean Squared Error on the test data (MSE), the Mean Squared Error on the training data (looking for possible overfitting),  as well as  Mean Absolute Error (MAE), bias and  $R^2$ all evaluated on the test data. As one can see in Table \ref{tab:measures} the results do vary from model to model. Looking at the MSE first, we identify the self built backwards selection linear model, the forward selection model (having the lowest value) and the Gradient Boosting Machine as best with regards to this metric. Lasso and Ridge regression have the worst values. This picture is overall confirmed by the other measures implemented. The linear models without regularization components and to a certain extent the GBM (for the MAE the GBM and Random Forest are almost the same) always show the best results , whereas the Random Forest lies somewhere in the middle and Lasso and Ridge regression have the highest results. One exception is the bias, where GBM has the highest figure. On the other hand all models show very low, but positive bias. One interesting thing, that can be taken away from Table \ref{tab:measures} as well, is the concern for possible overfitting for the GBM and Random Forest model.
-Both have an upwards movement in MSE when going from training to test data. This is most noticeable for the random forest, which has the lowest MSE in the training data by far and is just slightly below Lasso and Ridge regression in the test data. In comparison the GBM only has a smaller uptick, which is very often the case when testing a model on real data. The other models though all show better results on the test data than on the training data. This might be a case of a "lucky sample" chosen by random as a test set. With regards to $R^2$ one can see very high values for all models confirming the ordering pointed out by the other measures. 
+After tuning and training all our models it is important to test their performance on "unseen" data, which is not included in the training of the models. For this purpose we hold back our test dataset on which we evaluate our models with different metrics namely the Mean Squared Error on the test data (MSE), the Mean Squared Error on the training data (looking for possible overfitting),  as well as  Mean Absolute Error (MAE), bias and  $R^2$ all evaluated on the test data. As one can see in Table \ref{tab:measures} the results do vary from model to model. Looking at the MSE first, we identify the self built backwards selection linear model, the forward selection model (having the lowest value) and the Gradient Boosting Machine (GBM) as best with regards to this metric. Lasso and Ridge regression have the worst values. This picture is overall confirmed by the other measures implemented. The linear models without regularization components and to a certain extent the GBM (for the MAE the GBM and Random Forest are almost the same) always show the best results , whereas the Random Forest lies somewhere in the middle and Lasso and Ridge regression have the worst results amongst our models. One exception is the bias, where GBM has the highest figure. On the other hand all models show very low, but positive bias. One interesting thing, that can be taken away from Table \ref{tab:measures} as well, is the concern for possible overfitting for the GBM and Random Forest model.
+Both have an upwards movement in MSE when going from training to test data. This is most noticeable for the random forest, which has the lowest MSE in the training data by far and is just slightly below Lasso and Ridge regression in the test data. In comparison the GBM only has a smaller uptick, which is very often the case when testing a model on real data. The other models though all show better results on the test data than on the training data. This might be a case of a "lucky sample" chosen by random as a test set. With regards to $R^2$ one can see very high values for all models confirming the ordering pointed out by the other measures.
 
 
 \input{\string"../quantlets/Model_Comparison/modelcomparison\string".tex}
@@ -13,42 +13,42 @@ Besides the numbers presented in Table \ref{tab:measures} we give a graphical re
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Model_Comparison/bwd_fit\string".pdf}
+	\includegraphics[width=0.7\textwidth,keepaspectratio]{\string"../quantlets/Model_Comparison/bwd_fit\string".png}
   	\caption{Scatterplot of linear model predictions and test data}
   	\label{fig:lm}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/fwd_fit\string".pdf}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/fwd_fit\string".png}
   	\caption{Scatterplot of forward model predictions and test data}
   	\label{fig:fwd}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Lasso_fit\string".pdf}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Lasso_fit\string".png}
   	\caption{Scatterplot of Lasso model predictions and test data}
   	\label{fig:Lasso}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Ridge_fit\string".pdf}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/Ridge_fit\string".png}
   	\caption{Scatterplot of Ridge model predictions and test data}
   	\label{fig:Ridge}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/gbmtuned\string".pdf}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/gbmtuned\string".png}
   	\caption{Scatterplot of GBM model predictions and test data}
   	\label{fig:gbm}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/rftuned\string".pdf}
+	\includegraphics[width=0.7\linewidth,keepaspectratio]{\string"../quantlets/Model_Comparison/rftuned\string".png}
   	\caption{Scatterplot of Random Forest model predictions and test data}
   	\label{fig:rf}
 \end{figure}
