@@ -3,7 +3,7 @@ rm(list = ls(all = TRUE))
 graphics.off()
 
 # Install and load packages
-libraries = c("ggplot2", "xtable", "gridExtra", "gbm", "plyr", "glmnet")
+libraries = c("ggplot2", "xtable", "gridExtra", "gbm", "plyr", "glmnet", "randomForest")
 lapply(libraries, function(x) if (!(x %in% installed.packages())) {
     install.packages(x)
 })
@@ -183,23 +183,13 @@ rf.plot    = ggplot(df.gbm, aes(predictions.rf,V1)) + geom_point() + geom_segmen
     annotate("text", label = paste("slope:", round(coeff.lm[[6]][2],4), sep = " "), x = -2, y = 2.5, size =10, color = "blue") + 
     theme_classic(base_size = 20)
 
-# plotting resulting graphs together for compactness
 
-plot.list = list(bwd.plot, fwd.plot, lasso.plot, ridge.plot, gbm.plot, rf.plot) # list of all graphs
-plot.loop = seq(length(plot.list))
-plot.loop = plot.loop[seq(length(plot.list)) %% 2 != 0]
-
-pdf("Model_comparison.pdf", onefile = TRUE, height = 11.00, width = 11.69)           
-for (i in plot.loop) {                                                         # looping through all models, creating a pdf with two plots per page for readability
-    j = i + 1
-    grid.arrange(grobs = list(plot.list[[i]], plot.list[[j]]))  
-}
-dev.off()
-
-# plotting resulting graphs individually 
+# saving resulting graphs individually 
+plot.list      = list(bwd.plot, fwd.plot, lasso.plot, ridge.plot, gbm.plot, rf.plot) # list of all graphs
 names.plotting = c("bwd_fit", "fwd_fit", "lasso_fit", "ridge_fit", "gbmtuned","rftuned")
+
 for (i in 1:length(names.plotting)){
-    pdf(paste(names.plotting[i],".pdf",sep=""), height = 8.27, width = 11.69)
+    png(paste(names.plotting[i],".png",sep=""), units = "in", res = 72, height = 8.27, width = 11.69)
     plot(plot.list[[i]])
     dev.off()
 }

@@ -1,4 +1,4 @@
-
+﻿
 Name of Quantlet: Model_Comparison
 
 Published in: 'Statistical programming languages - Student Project on "House Prices: Advanced Regression Techniques" '
@@ -14,4 +14,4 @@ See also:
 Submitted:  10.06.2017
 
 Input: train_preprocessed.csv, test_preprocessed.csv, gbm.RData, rf.RData, regression_models_fit.RData 
-Output: Model_Comparison.pdf, modelcomparison.tex, bwd_fit.pdf, fwd_fit.pdf, lasso_fit.pdf, ridge_fit.pdf, gbmtuned.pdf, rftuned.pdf
+Output: modelcomparison.tex, bwd_fit.png, fwd_fit.png, lasso_fit.png, ridge_fit.png, gbmtuned.png, rftuned.png

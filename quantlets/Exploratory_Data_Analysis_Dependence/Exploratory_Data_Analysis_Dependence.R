@@ -61,7 +61,7 @@ corr.func = function(data, cut.value, corr.mat = FALSE, corr.test = FALSE, signi
     
     
     # save resulting correlation matrix
-    pdf("Corrplot.pdf")
+    png("Corrplot.png")
     if (corr.test == FALSE) {
         corrplot(corr.numeric.adjusted, method = "square", tl.col = "black")
     } else {
@@ -113,9 +113,9 @@ corr.barplot = function(numb.corr) {
 # plotting the barplot in RStudio
 corr.barplot(36)
 
-# saving the plot as PDF
-path.barplot = file.path(getwd(), "Barplot_ordered.pdf")
-pdf(file = path.barplot)
+# saving the plot as PNG
+path.barplot = file.path(getwd(), "Barplot_ordered.png")
+png(file = path.barplot)
 corr.barplot(20)
 dev.off()
 
@@ -156,10 +156,10 @@ for (j in 1:7){
         boxplot.loop      = boxplot.target(plotting.variable)
         boxplot.list      = c(boxplot.list, list(boxplot.loop))
       }
-    # saving the plots as PDF
-    path = file.path(getwd(), paste("boxplot_", first.variable, "through", last.variable, ".pdf", sep = ""))
+    # saving the plots as PNG
+    path = file.path(getwd(), paste("boxplot_", first.variable, "through", last.variable, ".png", sep = ""))
   
-    pdf(file = path)
+    png(file = path)
     do.call("grid.arrange", c(boxplot.list, ncol = 2))
     dev.off()
     boxplot.list = list()
@@ -171,6 +171,10 @@ for (j in 1:7){
 
 
 # printing the plots in RStudio
+boxplot.list   = list()
+first.variable = 1     # position of first variable to use 
+last.variable  = 6     # position of last variable to use
+
 for (i in first.variable:last.variable) {
     plotting.variable = colnames(categoric.data[i])
     boxplot.loop      = boxplot.target(plotting.variable)

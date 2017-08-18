@@ -14,4 +14,4 @@ See also:
 Submitted:  10.06.2017
 
 Input: 'train.csv'
-Output: Corrplot.pdf, Barplot_ordered.pdf, boxplot_1through6.pdf, boxplot_7through12.pdf, boxplot_13through18.pdf, boxplot_19through24.pdf, boxplot_25through30.pdf, boxplot_31through36.pdf, boxplot_37through43.pdf
+Output: Corrplot.png, Barplot_ordered.png, boxplot_1through6.png, boxplot_7through12.png, boxplot_13through18.png, boxplot_19through24.png, boxplot_25through30.png, boxplot_31through36.png, boxplot_37through43.png
