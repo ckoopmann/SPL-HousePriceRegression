@@ -10,7 +10,6 @@ lapply(libraries, function(x) if (!(x %in% installed.packages())) {
 lapply(libraries, library, quietly = TRUE, character.only = TRUE)
 
 #read in data: Please set your working directory!
-setwd("C:/Users/Tammena/Documents/SPL-HousePriceRegression/quantlets/Regression_Models")
 df    = read.csv("train_preprocessed.csv")
 #set rownumbers in dataframe to NULL
 df$X  = NULL
