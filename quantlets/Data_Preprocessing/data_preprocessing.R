@@ -49,15 +49,10 @@ miss.plot = function(x) {
     x     %>% 
     is.na %>% 
     melt  %>% 
-    ggplot(data = ., aes(x = Var2, y = Var1)) 
-        + geom_raster(aes(fill = value)) 
-        + scale_fill_discrete(name = "", labels = c("Present", "Missing")) 
-        + theme_classic() 
-        + theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) 
-        + labs(x = "Variables in Dataset", y = "Rows / observations")
+    ggplot(data = ., aes(x = Var2, y = Var1))  + geom_raster(aes(fill = value))   + scale_fill_discrete(name = "", labels = c("Present", "Missing"))    + theme_classic()     + theme(axis.text.x = element_text(angle = 45, vjust = 0.5))  + labs(x = "Variables in Dataset", y = "Rows / observations")
 }
 
-png(file = "missmap.png", width = 800, height = 800)
+png(file = "missmap.png", width = 16, height = 16, unit='cm', res = 100)
 miss.plot(df[na_vars])
 dev.off()
 
@@ -172,17 +167,14 @@ df.plot           = rbind(df.temp.numeric[, names(outlier_table[outlier_table<14
 df.plot$truncated = as.factor(c(rep(0, nrow(df.temp.numeric)), rep(1, nrow(df.outlier.trunc))))
 gg                = melt(df.plot, id="truncated")
 
-png(file = "boxplots.png", width = 1200, height = 800)
-ggplot(data = gg, aes(x=variable, y=value)) 
-+ geom_boxplot(aes(fill=truncated)) 
-+ facet_wrap( ~ variable, scales="free") 
-+ theme_classic() 
+png(file = "boxplots.png", width = 24, height = 16, unit='cm', res = 100)
+ggplot(data = gg, aes(x=variable, y=value)) + geom_boxplot(aes(fill=truncated))  + facet_wrap( ~ variable, scales="free")  + theme_classic() 
 dev.off()
 
 # 4. Plot the cleaned dataset make a number of histograms
 gg = melt(scale(df.outlier.trunc[, !names(df.outlier.trunc) %in% c("Id")]))
 
-png(file = "histograms.png", width = 1200, height = 800)
+png(file = "histograms.png", width = 24, height = 16, unit='cm', res = 100)
 qplot(data = gg, x = value, facets = ~Var2, bins = 30) + theme_classic() 
 dev.off()
 
@@ -196,7 +188,7 @@ cor(df.pca)
 
 # principal component analysis
 prin1 = princomp(df.pca, cor = T, scores = T)
-png(file = "screeplot.png", width = 800, height = 800)
+png(file = "screeplot.png", width = 16, height = 16, unit='cm', res = 100)
 screeplot(prin1, type = "l")
 dev.off()
 summary(prin1)

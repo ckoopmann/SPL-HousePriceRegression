@@ -56,7 +56,7 @@ AIC = fwd.fit$anova$AIC
 VAR = row_number(-AIC)
 gg  = as.data.frame(cbind(VAR, AIC))
 
-png(file = "step.png", width = 800, height = 800)
+png(file = "step.png", width = 16, height = 16, unit='cm', res = 100)
 ggplot(aes(x=VAR, y = AIC), data = gg)+ geom_point() + theme_classic() 
 dev.off()
 
@@ -97,13 +97,13 @@ lasso = lm.penal(type = "lasso", x = x, y = y)
 ridge = lm.penal(type = "ridge", x = x, y = y)
 
 #plot the optimal lamdba for lasso
-png(file = "lasso_lambda.png", width = 800, height = 800)
+png(file = "lasso_lambda.png", width = 16, height = 16, unit='cm', res = 100)
 autoplot(lasso[[4]]) + theme_classic() + theme(panel.background = element_rect(fill='white', color="black"))
 dev.off()
 
 #plot the lasso penalty results
 lasso.plot = lm.penal(type="lasso", x = as.matrix(df[, lasso[[1]]]), y = y)
-png(file = "lasso.png", width = 1200, height = 800)
+png(file = "lasso.png", width = 24, height = 16, unit='cm', res = 100)
 autoplot(lasso.plot[[4]]$glmnet.fit, xvar="lambda") + theme_classic() 
 dev.off()
 
